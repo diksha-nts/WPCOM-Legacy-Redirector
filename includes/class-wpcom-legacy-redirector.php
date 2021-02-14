@@ -29,6 +29,9 @@ class WPCOM_Legacy_Redirector {
 	static function init() {
 		$post_type = new Post_Type();
 		$post_type->register();
+
+		$list_redirects = new List_Redirects();
+		$list_redirects->init();
 	}
 
 	/**
