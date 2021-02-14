@@ -1,5 +1,7 @@
 <?php
 
+use \Automattic\LegacyRedirector\Post_Type;
+
 class WPCOM_Legacy_Redirector_UI {
 	/**
 	 * Constructor Class.
@@ -18,7 +20,7 @@ class WPCOM_Legacy_Redirector_UI {
 	 */
 	public function admin_menu() {
 		add_submenu_page(
-			'edit.php?post_type=vip-legacy-redirect',
+			'edit.php?post_type=' . Post_Type::POST_TYPE,
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
 			'manage_redirects',
@@ -133,7 +135,7 @@ class WPCOM_Legacy_Redirector_UI {
 	 */
 	public function modify_list_row_actions( $actions, $post ) {
 		// Check for your post type.
-		if ( 'vip-legacy-redirect' === $post->post_type ) {
+		if ( PostType::POST_TYPE === $post->post_type ) {
 
 			$url = admin_url( 'post.php?post=vip-legacy-redirect&post=' . $post->ID );
 

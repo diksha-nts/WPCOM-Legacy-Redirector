@@ -1,9 +1,13 @@
 <?php
 
+use \Automattic\LegacyRedirector\Post_Type;
+use \Automattic\LegacyRedirector\List_Redirects;
+
 /**
  * Plugin core functionality for creating, validating, and performing redirect rules.
  */
 class WPCOM_Legacy_Redirector {
+	// Deprecated. Use \Automattic\LegacyRedirector\Post_Type::POST_TYPE instead.
 	const POST_TYPE   = 'vip-legacy-redirect';
 	const CACHE_GROUP = 'vip-legacy-redirect-2';
 
@@ -16,48 +20,15 @@ class WPCOM_Legacy_Redirector {
 		add_filter( 'template_redirect', array( __CLASS__, 'maybe_do_redirect' ), 0 ); // hook in early, before the canonical redirect.
 		add_action( 'admin_menu', array( new WPCOM_Legacy_Redirector_UI(), 'admin_menu' ) );
 		add_filter( 'admin_enqueue_scripts', array( __CLASS__, 'wpcom_legacy_add_redirect_js' ) );
-		add_filter( 'bulk_actions-edit-' . self::POST_TYPE, array( __CLASS__, 'remove_bulk_edit' ) );
+		add_filter( 'bulk_actions-edit-' . Post_Type::POST_TYPE, array( __CLASS__, 'remove_bulk_edit' ) );
 	}
 
 	/**
-	 * Initialize and register the CPT.
+	 * Initialize and register other classes.
 	 */
 	static function init() {
-		$labels = array(
-			'name'                  => _x( 'Redirect Manager', 'Post type general name', 'wpcom-legacy-redirector' ),
-			'singular_name'         => _x( 'Redirect Manager', 'Post type singular name', 'wpcom-legacy-redirector' ),
-			'menu_name'             => _x( 'Redirect Manager', 'Admin Menu text', 'wpcom-legacy-redirector' ),
-			'name_admin_bar'        => _x( 'Redirect Manager', 'Add New on Toolbar', 'wpcom-legacy-redirector' ),
-			'add_new'               => __( 'Add New', 'wpcom-legacy-redirector' ),
-			'add_new_item'          => __( 'Add New Redirect', 'wpcom-legacy-redirector' ),
-			'new_item'              => __( 'New Redirect', 'wpcom-legacy-redirector' ),
-			'all_items'             => __( 'All Redirects', 'wpcom-legacy-redirector' ),
-			'search_items'          => __( 'Search Redirects', 'wpcom-legacy-redirector' ),
-			'not_found'             => __( 'No redirects found.', 'wpcom-legacy-redirector' ),
-			'not_found_in_trash'    => __( 'No redirects found in Trash.', 'wpcom-legacy-redirector' ),
-			'filter_items_list'     => _x( 'Filter redirects list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'wpcom-legacy-redirector' ),
-			'items_list_navigation' => _x( 'Redirect list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'wpcom-legacy-redirector' ),
-			'items_list'            => _x( 'Redirects list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'wpcom-legacy-redirector' ),
-		);
-
-		$args = array(
-			'labels'             => $labels,
-			'public'             => false,
-			'publicly_queryable' => true,
-			'show_ui'            => true,
-			'rewrite'            => false,
-			'query_var'          => false,
-			'capability_type'    => 'post',
-			'hierarchical'       => false,
-			'menu_position'      => 100,
-			'show_in_nav_menus'  => false,
-			'show_in_rest'       => false,
-			'capabilities'       => array( 'create_posts' => 'do_not_allow' ),
-			'map_meta_cap'       => true,
-			'menu_icon'          => 'dashicons-randomize',
-			'supports'           => [ 'page-attributes' ],
-		);
-		register_post_type( self::POST_TYPE, $args );
+		$post_type = new Post_Type();
+		$post_type->register();
 	}
 
 	/**
@@ -173,7 +144,7 @@ class WPCOM_Legacy_Redirector {
 		$args = array(
 			'post_name'  => $from_url_hash,
 			'post_title' => $from_url,
-			'post_type'  => self::POST_TYPE,
+			'post_type'  => Post_Type::POST_TYPE,
 		);
 
 		if ( is_numeric( $redirect_to ) ) {
@@ -346,7 +317,7 @@ class WPCOM_Legacy_Redirector {
 
 		$url_hash = self::get_url_hash( $url );
 
-		$redirect_post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name = %s LIMIT 1", self::POST_TYPE, $url_hash ) );
+		$redirect_post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name = %s LIMIT 1", Post_Type::POST_TYPE, $url_hash ) );
 
 		if ( ! $redirect_post_id ) {
 			$redirect_post_id = 0;
