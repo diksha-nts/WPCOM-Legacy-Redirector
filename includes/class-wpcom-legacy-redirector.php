@@ -1,7 +1,8 @@
 <?php
 
-use \Automattic\LegacyRedirector\Post_Type;
+use \Automattic\LegacyRedirector\Capability;
 use \Automattic\LegacyRedirector\List_Redirects;
+use \Automattic\LegacyRedirector\Post_Type;
 
 /**
  * Plugin core functionality for creating, validating, and performing redirect rules.
@@ -16,7 +17,6 @@ class WPCOM_Legacy_Redirector {
 	 */
 	static function start() {
 		add_action( 'init', array( __CLASS__, 'init' ) );
-		add_action( 'init', array( __CLASS__, 'register_redirect_custom_capability' ) );
 		add_filter( 'template_redirect', array( __CLASS__, 'maybe_do_redirect' ), 0 ); // hook in early, before the canonical redirect.
 		add_action( 'admin_menu', array( new WPCOM_Legacy_Redirector_UI(), 'admin_menu' ) );
 		add_filter( 'admin_enqueue_scripts', array( __CLASS__, 'wpcom_legacy_add_redirect_js' ) );
@@ -30,25 +30,11 @@ class WPCOM_Legacy_Redirector {
 		$post_type = new Post_Type();
 		$post_type->register();
 
+		$capability = new Capability();
+		$capability->register();
+
 		$list_redirects = new List_Redirects();
 		$list_redirects->init();
-	}
-
-	/**
-	 * Register custom role using VIP Helpers with fallbacks.
-	 */
-	static function register_redirect_custom_capability() {
-		$cap = apply_filters( 'manage_redirect_capability', 'manage_redirects' );
-		if ( function_exists( 'wpcom_vip_add_role_caps' ) ) {
-			wpcom_vip_add_role_caps( 'administrator', $cap );
-			wpcom_vip_add_role_caps( 'editor', $cap );
-		} else {
-			$roles = array( 'administrator', 'editor' );
-			foreach ( $roles as $role ) {
-				$role_obj = get_role( $role );
-				$role_obj->add_cap( $cap );
-			}
-		}
 	}
 
 	/**

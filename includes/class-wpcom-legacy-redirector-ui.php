@@ -1,5 +1,6 @@
 <?php
 
+use \Automattic\LegacyRedirector\Capability;
 use \Automattic\LegacyRedirector\Post_Type;
 
 class WPCOM_Legacy_Redirector_UI {
@@ -20,7 +21,7 @@ class WPCOM_Legacy_Redirector_UI {
 			'edit.php?post_type=' . Post_Type::POST_TYPE,
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
-			'manage_redirects',
+			Capability::MANAGE_REDIRECTS_CAPABILITY,
 			'wpcom-legacy-redirector',
 			array( $this, 'generate_page_html' )
 		);
@@ -127,7 +128,7 @@ class WPCOM_Legacy_Redirector_UI {
 	 * Validate the redirect that is being added.
 	 */
 	public function add_redirect_validation() {
-		if ( ! current_user_can( 'manage_redirects' ) ) {
+		if ( ! current_user_can( Capability::MANAGE_REDIRECTS_CAPABILITY ) ) {
 			return;
 		}
 		$errors   = array();

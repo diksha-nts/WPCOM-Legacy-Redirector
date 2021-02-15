@@ -89,7 +89,7 @@ final class List_Redirects {
 			$trash   = $actions['trash'];
 			$actions = array();
 
-			if ( current_user_can( 'manage_redirects' ) ) {
+			if ( current_user_can( Capability::MANAGE_REDIRECTS_CAPABILITY ) ) {
 				// Add a nonce to Validate Link
 				$validate_link = wp_nonce_url(
 					add_query_arg(
