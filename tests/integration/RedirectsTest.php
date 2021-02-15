@@ -37,7 +37,7 @@ class RedirectsTest extends TestCase {
 		$redirect = \WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect failed' );
 
-		$redirect = \WPCOM_Legacy_Redirector::get_redirect_uri( $from );
+		$redirect = \Automattic\LegacyRedirector\Lookup::get_redirect_uri( $from );
 		$this->assertEquals( $redirect, $to, 'get_redirect_uri failed' );
 	}
 
@@ -102,7 +102,7 @@ class RedirectsTest extends TestCase {
 		$redirect = \WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect failed' );
 
-		$redirect = \WPCOM_Legacy_Redirector::get_redirect_uri( $protected_from );
+		$redirect = \Automattic\LegacyRedirector\Lookup::get_redirect_uri( $protected_from );
 		$this->assertEquals( $redirect, $protected_to, 'get_redirect_uri failed' );
 	}
 
