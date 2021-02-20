@@ -29,6 +29,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command( 'wpcom-legacy-redirector', 'WPCOM_Legacy_Redirector_CLI' );
 }
 
+require __DIR__ . '/includes/class-capability.php';
+require __DIR__ . '/includes/class-post-type.php';
+require __DIR__ . '/includes/class-list-redirects.php';
+require __DIR__ . '/includes/class-lookup.php';
 require __DIR__ . '/includes/class-wpcom-legacy-redirector-ui.php';
 require __DIR__ . '/includes/class-wpcom-legacy-redirector.php';
 

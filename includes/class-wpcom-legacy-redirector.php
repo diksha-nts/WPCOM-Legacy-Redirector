@@ -1,9 +1,15 @@
 <?php
 
+use \Automattic\LegacyRedirector\Capability;
+use \Automattic\LegacyRedirector\List_Redirects;
+use \Automattic\LegacyRedirector\Lookup;
+use \Automattic\LegacyRedirector\Post_Type;
+
 /**
  * Plugin core functionality for creating, validating, and performing redirect rules.
  */
 class WPCOM_Legacy_Redirector {
+	// Deprecated. Use \Automattic\LegacyRedirector\Post_Type::POST_TYPE instead.
 	const POST_TYPE   = 'vip-legacy-redirect';
 	const CACHE_GROUP = 'vip-legacy-redirect-2';
 
@@ -12,69 +18,24 @@ class WPCOM_Legacy_Redirector {
 	 */
 	static function start() {
 		add_action( 'init', array( __CLASS__, 'init' ) );
-		add_action( 'init', array( __CLASS__, 'register_redirect_custom_capability' ) );
 		add_filter( 'template_redirect', array( __CLASS__, 'maybe_do_redirect' ), 0 ); // hook in early, before the canonical redirect.
 		add_action( 'admin_menu', array( new WPCOM_Legacy_Redirector_UI(), 'admin_menu' ) );
 		add_filter( 'admin_enqueue_scripts', array( __CLASS__, 'wpcom_legacy_add_redirect_js' ) );
-		add_filter( 'bulk_actions-edit-' . self::POST_TYPE, array( __CLASS__, 'remove_bulk_edit' ) );
+		add_filter( 'bulk_actions-edit-' . Post_Type::POST_TYPE, array( __CLASS__, 'remove_bulk_edit' ) );
 	}
 
 	/**
-	 * Initialize and register the CPT.
+	 * Initialize and register other classes.
 	 */
 	static function init() {
-		$labels = array(
-			'name'                  => _x( 'Redirect Manager', 'Post type general name', 'wpcom-legacy-redirector' ),
-			'singular_name'         => _x( 'Redirect Manager', 'Post type singular name', 'wpcom-legacy-redirector' ),
-			'menu_name'             => _x( 'Redirect Manager', 'Admin Menu text', 'wpcom-legacy-redirector' ),
-			'name_admin_bar'        => _x( 'Redirect Manager', 'Add New on Toolbar', 'wpcom-legacy-redirector' ),
-			'add_new'               => __( 'Add New', 'wpcom-legacy-redirector' ),
-			'add_new_item'          => __( 'Add New Redirect', 'wpcom-legacy-redirector' ),
-			'new_item'              => __( 'New Redirect', 'wpcom-legacy-redirector' ),
-			'all_items'             => __( 'All Redirects', 'wpcom-legacy-redirector' ),
-			'search_items'          => __( 'Search Redirects', 'wpcom-legacy-redirector' ),
-			'not_found'             => __( 'No redirects found.', 'wpcom-legacy-redirector' ),
-			'not_found_in_trash'    => __( 'No redirects found in Trash.', 'wpcom-legacy-redirector' ),
-			'filter_items_list'     => _x( 'Filter redirects list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'wpcom-legacy-redirector' ),
-			'items_list_navigation' => _x( 'Redirect list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'wpcom-legacy-redirector' ),
-			'items_list'            => _x( 'Redirects list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'wpcom-legacy-redirector' ),
-		);
+		$post_type = new Post_Type();
+		$post_type->register();
 
-		$args = array(
-			'labels'             => $labels,
-			'public'             => false,
-			'publicly_queryable' => true,
-			'show_ui'            => true,
-			'rewrite'            => false,
-			'query_var'          => false,
-			'capability_type'    => 'post',
-			'hierarchical'       => false,
-			'menu_position'      => 100,
-			'show_in_nav_menus'  => false,
-			'show_in_rest'       => false,
-			'capabilities'       => array( 'create_posts' => 'do_not_allow' ),
-			'map_meta_cap'       => true,
-			'menu_icon'          => 'dashicons-randomize',
-			'supports'           => [ 'page-attributes' ],
-		);
-		register_post_type( self::POST_TYPE, $args );
-	}
+		$capability = new Capability();
+		$capability->register();
 
-	/**
-	 * Register custom role using VIP Helpers with fallbacks.
-	 */
-	static function register_redirect_custom_capability() {
-		$cap = apply_filters( 'manage_redirect_capability', 'manage_redirects' );
-		if ( function_exists( 'wpcom_vip_add_role_caps' ) ) {
-			wpcom_vip_add_role_caps( 'administrator', $cap );
-			wpcom_vip_add_role_caps( 'editor', $cap );
-		} else {
-			$roles = array( 'administrator', 'editor' );
-			foreach ( $roles as $role ) {
-				$role_obj = get_role( $role );
-				$role_obj->add_cap( $cap );
-			}
-		}
+		$list_redirects = new List_Redirects();
+		$list_redirects->init();
 	}
 
 	/**
@@ -107,7 +68,7 @@ class WPCOM_Legacy_Redirector {
 		$request_path = apply_filters( 'wpcom_legacy_redirector_request_path', $url );
 
 		if ( $request_path ) {
-			$redirect_uri = self::get_redirect_uri( $request_path );
+			$redirect_uri = Lookup::get_redirect_uri( $request_path );
 			if ( $redirect_uri ) {
 				$redirect_status = apply_filters( 'wpcom_legacy_redirector_redirect_status', 301, $url );
 
@@ -173,7 +134,7 @@ class WPCOM_Legacy_Redirector {
 		$args = array(
 			'post_name'  => $from_url_hash,
 			'post_title' => $from_url,
-			'post_type'  => self::POST_TYPE,
+			'post_type'  => Post_Type::POST_TYPE,
 		);
 
 		if ( is_numeric( $redirect_to ) ) {
@@ -199,7 +160,7 @@ class WPCOM_Legacy_Redirector {
 	 * @return array|WP_Error Error if invalid redirect URL specified; returns array of params otherwise.
 	 */
 	static function validate_urls( $from_url, $redirect_to ) {
-		if ( false !== self::get_redirect_uri( $from_url ) ) {
+		if ( false !== Lookup::get_redirect_uri( $from_url ) ) {
 			return new WP_Error( 'duplicate-redirect-uri', 'A redirect for this URI already exists' );
 		}
 		if ( is_numeric( $redirect_to ) || false !== strpos( $redirect_to, 'http' ) ) {
@@ -237,131 +198,12 @@ class WPCOM_Legacy_Redirector {
 	}
 
 	/**
-	 * Get the preservable query string parameters from a given URL.
-	 *
-	 * Does not edit the URL.
-	 *
-	 * @throws \UnexpectedValueException Invalid value from filter.
-	 *
-	 * @param string $url Normalized source URL with or without querystring.
-	 * @return array Associative array of preserved keys and values that were stripped.
-	 */
-	public static function get_preservable_querystring_params_from_url( $url ) {
-		/**
-		 * Filter the list of preservable querystring parameter keys.
-		 *
-		 * The plugin supports providing a list of querystring keys that should be ignored
-		 * when calculating the URL hash. These keys and their values are stripped, the
-		 * redirect lookup is done on the remaining URL, and then the keys and values are appended
-		 * to the destination URL.
-		 *
-		 * Note that if you amend this list after URLs that include the preserved keys have been
-		 * saved to the database, then the redirect lookup will fail for those URLs.
-		 *
-		 * @since 1.3.0
-		 *
-		 * @param string[] $preservable_param_keys Indexed array of strings containing the querystring keys
-		 *                                         that should be preserved on the destination URL.
-		 * @param string   $url                    Normalized source URL.
-		 */
-		$preservable_param_keys = apply_filters( 'wpcom_legacy_redirector_preserve_query_params', array(), $url );
-		
-		if ( ! is_array( $preservable_param_keys ) ) {
-			throw new \UnexpectedValueException( 'wpcom_legacy_redirector_preserve_query_params must return an array.' );
-		}
-		if ( ! empty( $preservable_param_keys ) && array_keys( $preservable_param_keys ) !== range( 0, count( $preservable_param_keys ) - 1 ) ) {
-			throw new \UnexpectedValueException( 'wpcom_legacy_redirector_preserve_query_params must return an indexed array.' );
-		}
-
-		$preserved_param_values = array();
-		$preserved_params       = array();
-
-		// Parse URL to get querystring parameters.
-		$url_query_params = wp_parse_url( $url, PHP_URL_QUERY );
-		
-		// No parameters in URL, so return early.
-		if ( empty( $url_query_params ) ) {
-			return array();
-		}
-
-		// Parse querystring parameters to associative array.
-		parse_str( $url_query_params, $url_params );
-
-		// Extract and return the list of preservable keys (and their values).
-		return array_intersect_key( $url_params, array_flip( $preservable_param_keys ) );
-	}
-
-	/**
-	 * Get Redirect Destination URL.
-	 *
-	 * @param string $url URL to redirect (source).
-	 * @return string|bool Redirect URL if one was found; otherwise false.
-	 */
-	static function get_redirect_uri( $url ) {
-		$url = self::normalise_url( $url );
-		if ( is_wp_error( $url ) ) {
-			return false;
-		}
-
-		$preservable_params = self::get_preservable_querystring_params_from_url( $url );
-
-		$url = remove_query_arg( array_keys( $preservable_params ), $url );
-
-		$url_hash = self::get_url_hash( $url );
-
-		$redirect_post_id = wp_cache_get( $url_hash, self::CACHE_GROUP );
-
-		if ( false === $redirect_post_id ) {
-			$redirect_post_id = self::get_redirect_post_id( $url );
-			wp_cache_add( $url_hash, $redirect_post_id, self::CACHE_GROUP );
-		}
-
-		if ( $redirect_post_id ) {
-			$redirect_post = get_post( $redirect_post_id );
-			if ( ! $redirect_post instanceof WP_Post ) {
-				// If redirect post object doesn't exist, reset cache.
-				wp_cache_set( $url_hash, 0, self::CACHE_GROUP );
-
-				return false;
-			} elseif ( 0 !== $redirect_post->post_parent ) {
-				// Add preserved params to the destination URL.
-				return add_query_arg( $preservable_params, get_permalink( $redirect_post->post_parent ) );
-			} elseif ( ! empty( $redirect_post->post_excerpt ) ) {
-				// Add preserved params to the destination URL.
-				return add_query_arg( $preservable_params, esc_url_raw( $redirect_post->post_excerpt ) );
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get Redirect Post ID.
-	 *
-	 * @param string $url URL to redirect (source).
-	 * @return string|int Redirect post ID (as string) if one was found; otherwise 0.
-	 */
-	static function get_redirect_post_id( $url ) {
-		global $wpdb;
-
-		$url_hash = self::get_url_hash( $url );
-
-		$redirect_post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name = %s LIMIT 1", self::POST_TYPE, $url_hash ) );
-
-		if ( ! $redirect_post_id ) {
-			$redirect_post_id = 0;
-		}
-
-		return $redirect_post_id;
-	}
-
-	/**
 	 * Utility to get MD5 hash of URL.
 	 *
 	 * @param string $url URL to hash.
 	 * @return string Hash representation of string.
 	 */
-	private static function get_url_hash( $url ) {
+	public static function get_url_hash( $url ) {
 		return md5( $url );
 	}
 
@@ -372,7 +214,7 @@ class WPCOM_Legacy_Redirector {
 	 * @param string $url URL to transform.
 	 * @return string|WP_Error Transformed URL; error if validation failed.
 	 */
-	private static function normalise_url( $url ) {
+	public static function normalise_url( $url ) {
 		// Sanitise the URL first rather than trying to normalise a non-URL.
 		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {

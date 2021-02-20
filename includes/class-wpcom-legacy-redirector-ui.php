@@ -1,15 +1,15 @@
 <?php
 
+use \Automattic\LegacyRedirector\Capability;
+use \Automattic\LegacyRedirector\Post_Type;
+
 class WPCOM_Legacy_Redirector_UI {
 	/**
 	 * Constructor Class.
 	 */
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'validate_redirects_notices' ), 10, 2 );
-		add_action( 'manage_vip-legacy-redirect_posts_custom_column', array( $this, 'custom_vip_legacy_redirect_column' ), 10, 2 );
 		add_action( 'after_setup_theme', array( $this, 'validate_vip_legacy_redirect' ), 10, 2 );
-		add_filter( 'manage_vip-legacy-redirect_posts_columns', array( $this, 'set_vip_legacy_redirects_columns' ) );
-		add_filter( 'post_row_actions', array( $this, 'modify_list_row_actions' ), 10, 2 );
 		add_filter( 'removable_query_args', array( $this, 'add_removable_arg' ) );
 		add_filter( 'views_edit-vip-legacy-redirect', array( $this, 'vip_redirects_custom_post_status_filters' ) );
 	}
@@ -18,10 +18,10 @@ class WPCOM_Legacy_Redirector_UI {
 	 */
 	public function admin_menu() {
 		add_submenu_page(
-			'edit.php?post_type=vip-legacy-redirect',
+			'edit.php?post_type=' . Post_Type::POST_TYPE,
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
 			__( 'Add Redirect', 'wpcom-legacy-redirector' ),
-			'manage_redirects',
+			Capability::MANAGE_REDIRECTS_CAPABILITY,
 			'wpcom-legacy-redirector',
 			array( $this, 'generate_page_html' )
 		);
@@ -59,19 +59,7 @@ class WPCOM_Legacy_Redirector_UI {
 			}
 		}
 	}
-	/**
-	 * Set Columns for Redirect Table.
-	 *
-	 * @param array $columns Columns to show for the post type.
-	 */
-	public function set_vip_legacy_redirects_columns( $columns ) {
-		return array(
-			'cb'   => '<input type="checkbox" />',
-			'from' => __( 'Redirect From' ),
-			'to'   => __( 'Redirect To' ),
-			'date' => __( 'Date' ),
-		);
-	}
+
 	/**
 	 * Remove "draft" from the status filters for vip-legacy-redirect post type.
 	 */
@@ -79,100 +67,8 @@ class WPCOM_Legacy_Redirector_UI {
 		unset( $views['draft'] );
 		return $views;
 	}
-	/**
-	 * Add the data to the custom columns for the vip-legacy-redirects post type.
-	 * Provide warnings for possibly bad redirects.
-	 *
-	 * @param string $column The Column for the post_type table.
-	 * @param int $post_id  The Post ID.
-	 */
-	public function custom_vip_legacy_redirect_column( $column, $post_id ) {
-		switch ( $column ) {
-			case 'from':
-				echo esc_html( get_the_title( $post_id ) );
-				break;
-			case 'to':
-				$post    = get_post( $post_id );
-				$excerpt = get_the_excerpt( $post_id );
-				$parent  = get_post( $post->post_parent );
-
-				// Check if the Post is Published.
-				if ( ! empty( $excerpt ) ) {
-					// Check if it's the Home URL
-					if ( true === WPCOM_Legacy_Redirector::check_if_excerpt_is_home( $excerpt ) ) {
-						echo esc_html( $excerpt );
-					} elseif ( 0 === strpos( $excerpt, 'http' ) ) {
-						echo esc_url_raw( $excerpt );
-					} else {
-						if ( 'private' === WPCOM_Legacy_Redirector::vip_legacy_redirect_check_if_public( $excerpt ) ) {
-							echo esc_html( $excerpt ) . '<br /><em>' . esc_html__( 'Warning: Redirect is not a public URL.', 'wpcom-legacy-redirector' ) . '</em>';
-						} else {
-							echo esc_html( $excerpt );
-						}
-					}
-				} else {
-					switch ( WPCOM_Legacy_Redirector::vip_legacy_redirect_parent_id( $post ) ) {
-						case false:
-							echo '<em>' . esc_html__( 'Redirect is pointing to a Post ID that does not exist.', 'wpcom-legacy-redirector' ) . '</em>';
-							break;
-						case 'private':
-							echo ( esc_html( get_permalink( $parent ) ) . '<br /><em>' . esc_html__( 'Warning: Redirect is not a public URL.', 'wpcom-legacy-redirector' ) . '</em>' );
-							break;
-						default:
-							echo esc_html( str_replace( home_url(), '', get_permalink( $parent ) ) );
-					}
-				}
-				break;
-		}
-	}
-	/**
-	 * Modify the Row Actions for the vip-legacy-redirect post type.
-	 *
-	 * @param array $actions Default Actions.
-	 * @param object $post the current Post.
-	 */
-	public function modify_list_row_actions( $actions, $post ) {
-		// Check for your post type.
-		if ( 'vip-legacy-redirect' === $post->post_type ) {
-
-			$url = admin_url( 'post.php?post=vip-legacy-redirect&post=' . $post->ID );
-
-			if ( isset( $_GET['post_status'] ) && 'trash' === $_GET['post_status'] ) {
-				return $actions;
-			}
-			$trash   = $actions['trash'];
-			$actions = array();
-
-			if ( current_user_can( 'manage_redirects' ) ) {
-				// Add a nonce to Validate Link
-				$validate_link = wp_nonce_url(
-					add_query_arg(
-						array(
-							'action' => 'validate',
-						),
-						$url
-					),
-					'validate_vip_legacy_redirect',
-					'_validate_redirect'
-				);
-
-				// Add the Validate Link
-				$actions = array_merge(
-					$actions,
-					array(
-						'validate' => sprintf(
-							'<a href="%1$s">%2$s</a>',
-							esc_url( $validate_link ),
-							'Validate'
-						),
-					)
-				);
-				// Re-insert thrash link preserved from the default $actions.
-				$actions['trash'] = $trash;
-			}
-		}
-		return $actions;
-	}
+	
+	
 	/**
 	 * Return error data when validate check fails.
 	 *
@@ -232,7 +128,7 @@ class WPCOM_Legacy_Redirector_UI {
 	 * Validate the redirect that is being added.
 	 */
 	public function add_redirect_validation() {
-		if ( ! current_user_can( 'manage_redirects' ) ) {
+		if ( ! current_user_can( Capability::MANAGE_REDIRECTS_CAPABILITY ) ) {
 			return;
 		}
 		$errors   = array();

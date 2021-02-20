@@ -1,5 +1,7 @@
 <?php
 
+use \Automattic\LegacyRedirector\Post_Type;
+
 /**
  * Manage redirects added via the WPCOM Legacy Redirector plugin.
  */
@@ -20,7 +22,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		$total_redirects = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT( ID ) FROM $wpdb->posts WHERE post_type = %s AND post_excerpt LIKE %s",
-				WPCOM_Legacy_Redirector::POST_TYPE,
+				Post_Type::POST_TYPE,
 				'http%'
 			)
 		);
@@ -30,7 +32,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 			$redirect_urls = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT post_excerpt FROM $wpdb->posts WHERE post_type = %s AND post_excerpt LIKE %s ORDER BY ID ASC LIMIT %d, %d",
-					WPCOM_Legacy_Redirector::POST_TYPE,
+					Post_Type::POST_TYPE,
 					'http%',
 					( $paged * $posts_per_page ),
 					$posts_per_page
@@ -346,7 +348,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 
 		$posts_per_page = 100;
 		$paged          = 1;
-		$post_count     = array_sum( (array) wp_count_posts( WPCOM_Legacy_Redirector::POST_TYPE ) );
+		$post_count     = array_sum( (array) wp_count_posts( Post_Type::POST_TYPE ) );
 		$progress       = \WP_CLI\Utils\make_progress_bar( 'Exporting ' . number_format( $post_count ) . ' redirects', $post_count );
 		$output         = array();
 
@@ -354,7 +356,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 			$posts = get_posts( array(
 				'posts_per_page'   => $posts_per_page,
 				'paged'            => $paged,
-				'post_type'        => WPCOM_Legacy_Redirector::POST_TYPE,
+				'post_type'        => Post_Type::POST_TYPE,
 				'post_status'      => 'any',
 				'suppress_filters' => 'false',
 			) );

@@ -2,6 +2,7 @@
 
 namespace Automattic\LegacyRedirector\Tests;
 
+use Automattic\LegacyRedirector\Lookup;
 use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
@@ -104,7 +105,7 @@ class PreservableParamsTest extends TestCase {
 			$this->expectException( \get_class( $expected ) );
 		}
 
-		$actual = \WPCOM_Legacy_Redirector::get_preservable_querystring_params_from_url( $url );
+		$actual = Lookup::get_preservable_querystring_params_from_url( $url );
 
 		$this->assertSame( $expected, $actual, 'Preserved keys and values do not match.' );
 	}
