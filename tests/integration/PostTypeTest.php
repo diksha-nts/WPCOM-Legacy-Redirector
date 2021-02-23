@@ -1,6 +1,6 @@
 <?php
 
-namespace Automattic\LegacyRedirector\Tests;
+namespace Automattic\LegacyRedirector\Tests\Integration;
 
 use Automattic\LegacyRedirector\Post_Type;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Automattic\LegacyRedirector\Tests;
+namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;

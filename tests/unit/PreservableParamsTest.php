@@ -1,6 +1,6 @@
 <?php
 
-namespace Automattic\LegacyRedirector\Tests;
+namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Automattic\LegacyRedirector\Lookup;
 use Brain\Monkey;
