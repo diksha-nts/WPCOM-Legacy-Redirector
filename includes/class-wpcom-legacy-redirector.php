@@ -18,10 +18,19 @@ class WPCOM_Legacy_Redirector {
 	 */
 	static function start() {
 		add_action( 'init', array( __CLASS__, 'init' ) );
+		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		add_filter( 'template_redirect', array( __CLASS__, 'maybe_do_redirect' ), 0 ); // hook in early, before the canonical redirect.
 		add_action( 'admin_menu', array( new WPCOM_Legacy_Redirector_UI(), 'admin_menu' ) );
 		add_filter( 'admin_enqueue_scripts', array( __CLASS__, 'wpcom_legacy_add_redirect_js' ) );
 		add_filter( 'bulk_actions-edit-' . Post_Type::POST_TYPE, array( __CLASS__, 'remove_bulk_edit' ) );
+	}
+
+	/**
+	 * Initialize and register other classes during admin_init hook.
+	 */
+	static function admin_init() {
+		$capability = new Capability();
+		$capability->register();
 	}
 
 	/**
@@ -30,9 +39,6 @@ class WPCOM_Legacy_Redirector {
 	static function init() {
 		$post_type = new Post_Type();
 		$post_type->register();
-
-		$capability = new Capability();
-		$capability->register();
 
 		$list_redirects = new List_Redirects();
 		$list_redirects->init();
