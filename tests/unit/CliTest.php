@@ -5,7 +5,7 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
-class CliTest extends TestCase {
+final class CliTest extends TestCase {
 
 	/**
 	* @covers WPCOM_Legacy_Redirector_CLI::__construct

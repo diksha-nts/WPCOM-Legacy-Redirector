@@ -2,7 +2,7 @@
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
-class RedirectsTest extends TestCase {
+final class RedirectsTest extends TestCase {
 
 	public function get_redirect_data() {
 		return array(

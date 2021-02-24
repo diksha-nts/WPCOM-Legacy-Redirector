@@ -9,7 +9,7 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
 /**
  * Capability Class Unit Test
  */
-class CapabilityTest extends TestCase {
+final class CapabilityTest extends TestCase {
 
 	/**
 	 * Test Capability->register method to make sure update_option is only called once and mocking wpcom_vip_add_role_caps function

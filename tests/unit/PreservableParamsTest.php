@@ -6,7 +6,7 @@ use Automattic\LegacyRedirector\Lookup;
 use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
-class PreservableParamsTest extends TestCase {
+final class PreservableParamsTest extends TestCase {
 
 	public function data_get_preservable_querystring_params_from_url() {
 		return array(
