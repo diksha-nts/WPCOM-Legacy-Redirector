@@ -83,7 +83,7 @@ class PreservableParamsTest extends TestCase {
 	}
 
 	/**
-	* @covers WPCOM_Legacy_Redirector::get_preservable_querystring_params_from_url
+	* @covers \Automattic\LegacyRedirector\Lookup::get_preservable_querystring_params_from_url
 	* @dataProvider data_get_preservable_querystring_params_from_url
 	*/
 	public function test_get_preservable_querystring_params_from_url( $url, $preservable_param_keys, $expected ) {
