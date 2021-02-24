@@ -13,6 +13,6 @@ final class CliTest extends TestCase {
 	public function test_cli_class_is_instantiable() {
 		$cli = new WPCOM_Legacy_Redirector_CLI();
 
-		$this->assertInstanceOf( WPCOM_Legacy_Redirector_CLI::class, $cli );
+		self::assertInstanceOf( WPCOM_Legacy_Redirector_CLI::class, $cli );
 	}
 }

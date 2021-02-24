@@ -108,6 +108,6 @@ final class PreservableParamsTest extends TestCase {
 
 		$actual = Lookup::get_preservable_querystring_params_from_url( $url );
 
-		$this->assertSame( $expected, $actual, 'Preserved keys and values do not match.' );
+		self::assertSame( $expected, $actual, 'Preserved keys and values do not match.' );
 	}
 }

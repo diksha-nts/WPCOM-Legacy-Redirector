@@ -7,7 +7,7 @@
 		beStrictAboutChangesToGlobalState="true"
 		beStrictAboutCoversAnnotation="true"
 		beStrictAboutOutputDuringTests="true"
-		bootstrap="tests/unit/bootstrap.php"
+		bootstrap="tests/Unit/bootstrap.php"
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -22,7 +22,7 @@
 	>
 	<testsuites>
 		<testsuite name="unit">
-			<directory suffix="Test.php">./tests/unit/</directory>
+			<directory suffix="Test.php">./tests/Unit/</directory>
 		</testsuite>
 	</testsuites>
 
