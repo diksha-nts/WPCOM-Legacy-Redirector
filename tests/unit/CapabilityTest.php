@@ -3,7 +3,6 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Automattic\LegacyRedirector\Capability;
 use Brain\Monkey\Functions;
-use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
 /**

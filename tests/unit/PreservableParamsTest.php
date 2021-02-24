@@ -4,6 +4,7 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Automattic\LegacyRedirector\Lookup;
 use Brain\Monkey;
+use UnexpectedValueException;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
 final class PreservableParamsTest extends TestCase {
@@ -67,17 +68,17 @@ final class PreservableParamsTest extends TestCase {
 			'String returned from filter'            => array(
 				'https://example.com?foo=123&bar=456',
 				'foo',
-				new \UnexpectedValueException(),
+				new UnexpectedValueException(),
 			),
 			'Int returned from filter'               => array(
 				'https://example.com?foo=123&bar=456',
 				0,
-				new \UnexpectedValueException(),
+				new UnexpectedValueException(),
 			),
 			'Associative array returned from filter' => array(
 				'https://example.com?foo=123&bar=456',
 				array( 'foo' => 0, 'baz' => 1 ),
-				new \UnexpectedValueException(),
+				new UnexpectedValueException(),
 			),
 		);
 	}
@@ -96,13 +97,13 @@ final class PreservableParamsTest extends TestCase {
 		Monkey\Functions\stubs(
 			array(
 				'wp_parse_url' => static function ( $url, $component ) {
-					return \parse_url( $url, $component );
+					return parse_url( $url, $component );
 				},
 			)
 		);
 
 		if ( ! is_array( $expected ) ) {
-			$this->expectException( \get_class( $expected ) );
+			$this->expectException( get_class( $expected ) );
 		}
 
 		$actual = Lookup::get_preservable_querystring_params_from_url( $url );
