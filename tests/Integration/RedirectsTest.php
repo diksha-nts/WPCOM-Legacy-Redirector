@@ -1,8 +1,11 @@
 <?php
 
-namespace Automattic\LegacyRedirector\Tests;
+namespace Automattic\LegacyRedirector\Tests\Integration;
 
-class RedirectsTest extends TestCase {
+use \Automattic\LegacyRedirector\Lookup;
+use WPCOM_Legacy_Redirector;
+
+final class RedirectsTest extends TestCase {
 
 	public function get_redirect_data() {
 		return array(
@@ -34,10 +37,10 @@ class RedirectsTest extends TestCase {
 	 * @dataProvider get_redirect_data
 	 */
 	function test_redirect( $from, $to ) {
-		$redirect = \WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
+		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect failed' );
 
-		$redirect = \Automattic\LegacyRedirector\Lookup::get_redirect_uri( $from );
+		$redirect = Lookup::get_redirect_uri( $from );
 		$this->assertEquals( $redirect, $to, 'get_redirect_uri failed' );
 	}
 
@@ -99,10 +102,10 @@ class RedirectsTest extends TestCase {
 			}
 		);
 
-		$redirect = \WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
+		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect failed' );
 
-		$redirect = \Automattic\LegacyRedirector\Lookup::get_redirect_uri( $protected_from );
+		$redirect = Lookup::get_redirect_uri( $protected_from );
 		$this->assertEquals( $redirect, $protected_to, 'get_redirect_uri failed' );
 	}
 

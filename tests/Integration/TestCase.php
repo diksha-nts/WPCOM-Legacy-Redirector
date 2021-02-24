@@ -1,6 +1,6 @@
 <?php
 
-namespace Automattic\LegacyRedirector\Tests;
+namespace Automattic\LegacyRedirector\Tests\Integration;
 
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPTestUtilsTestCase;
 
