@@ -32,6 +32,9 @@
     "test": [
       "@php ./vendor/phpunit/phpunit/phpunit"
     ],
+	"test-coverage": [
+      "@php ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=coverage && echo coverage/index.html"
+    ],
     "integration-test": [
       "@php ./vendor/phpunit/phpunit/phpunit -c phpunit-integration.xml.dist"
     ]
