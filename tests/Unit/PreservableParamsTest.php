@@ -85,6 +85,7 @@ final class PreservableParamsTest extends TestCase {
 
 	/**
 	* @covers \Automattic\LegacyRedirector\Lookup::get_preservable_querystring_params_from_url
+	* @covers \Automattic\LegacyRedirector\Utils::mb_parse_url
 	* @dataProvider data_get_preservable_querystring_params_from_url
 	*/
 	public function test_get_preservable_querystring_params_from_url( $url, $preservable_param_keys, $expected ) {
