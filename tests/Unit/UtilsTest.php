@@ -4,6 +4,7 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 use Automattic\LegacyRedirector\Utils;
 use Brain\Monkey;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
+use Automattic\LegacyRedirector\Tests\Unit\MonkeyStubs;
 
 /**
  * Capability Class Unit Test
@@ -11,19 +12,20 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
 final class UtilsTest extends TestCase {
 
 	/**
+	 * Setup any initial code before tests are run.
+	 *
+	 * @beforeClass
+	 */
+	public static function initialSetup() {
+		new MonkeyStubs();
+	}
+
+	/**
 	 * Utils::mb_parse_url test method
 	 *
 	 * @covers \Automattic\LegacyRedirector\Utils::mb_parse_url
 	 */
 	public function test_mb_parse_url() {
-
-		Monkey\Functions\stubs(
-			array(
-				'wp_parse_url' => static function ( $url, $component ) {
-					return parse_url( $url, $component );
-				},
-			)
-		);
 
 		$url = 'https://www.example.org';
 		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.org', '', '' );
