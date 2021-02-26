@@ -20,10 +20,6 @@
 		stopOnSkipped="false"
 		verbose="true"
 	>
-	<php>
-        <ini name="display_errors" value="On" />
-        <ini name="display_startup_errors" value="On" />
-    </php>
 	<testsuites>
 		<testsuite name="unit">
 			<directory suffix="Test.php">./tests/Unit/</directory>
