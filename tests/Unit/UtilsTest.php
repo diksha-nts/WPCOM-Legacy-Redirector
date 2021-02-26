@@ -26,7 +26,7 @@ final class UtilsTest extends TestCase {
 	 * @dataProvider get_protected_redirect_data
 	 * @covers \Automattic\LegacyRedirector\Utils::mb_parse_url
 	 *
-	 * @param [type] $url             Full URL or path to redirect from.
+	 * @param [type] $url             Full URL to parse.
 	 * @param [type] $expected_schema Expected return schema.
 	 * @param [type] $expected_domain Expected return domain.
 	 * @param [type] $expected_path   Expected return path.
