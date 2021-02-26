@@ -12,39 +12,84 @@ use Automattic\LegacyRedirector\Tests\Unit\MonkeyStubs;
 final class UtilsTest extends TestCase {
 
 	/**
-	 * Setup any initial code before tests are run.
+	 * Setup any mocks before tests.
 	 *
-	 * @beforeClass
+	 * @before
 	 */
 	public static function initialSetup() {
 		new MonkeyStubs();
 	}
 
 	/**
-	 * Utils::mb_parse_url test method
+	 * Tests Utils::mb_parse_url().
 	 *
+	 * @dataProvider get_protected_redirect_data
 	 * @covers \Automattic\LegacyRedirector\Utils::mb_parse_url
+	 *
+	 * @param [type] $url             Full URL or path to redirect from.
+	 * @param [type] $expected_schema Expected return schema.
+	 * @param [type] $expected_domain Expected return domain.
+	 * @param [type] $expected_path   Expected return path.
+	 * @param [type] $expected_query  Expected return query.
+	 * @return void
 	 */
-	public function test_mb_parse_url() {
+	public function test_mb_parse_url( $url, $expected_schema, $expected_domain, $expected_path, $expected_query ) {
 
-		$url = 'https://www.example.org';
-		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.org', '', '' );
+		$this->do_assertion_mb_parse_url( $url, $expected_schema, $expected_domain, $expected_path, $expected_query );
 
-		$url = 'https://www.example.org/';
-		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.org', '/', '' );
+	}
 
-		$url = 'https://www.example.com/test';
-		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.com', '/test', '' );
+	/**
+	 * Data provider for tests methods
+	 *
+	 * @return array
+	 */
+	public function get_protected_redirect_data() {
+		return array(
+			'redirect_simple_url_no_end_slash'   => array(
+				'https://www.example.org',
+				'https',
+				'www.example.org',
+				'',
+				'',
+			),
+			'redirect_simple_url_with_end_slash' => array(
+				'http://www.example.org/',
+				'http',
+				'www.example.org',
+				'/',
+				'',
+			),
+			'redirect_url_with_path'             => array(
+				'https://www.example.com/test',
+				'https',
+				'www.example.com',
+				'/test',
+				'',
+			),
+			'redirect_unicode_url_with_query'    => array(
+				'http://www.example.com//فوتوغرافيا/?test=فوتوغرافيا',
+				'http',
+				'www.example.com',
+				'//فوتوغرافيا/',
+				'test=فوتوغرافيا',
+			),
+			'redirect_unicode_path_with_query'   => array(
+				'/فوتوغرافيا/?test=فوتوغرافيا',
+				'',
+				'',
+				'/فوتوغرافيا/',
+				'test=فوتوغرافيا',
+			),
+			'redirect_unicode_path_with_multiple_parameters' => array(
+				'/فوتوغرافيا/?test2=فوتوغرافيا&test=فوتوغرافيا',
+				'',
+				'',
+				'/فوتوغرافيا/',
+				'test2=فوتوغرافيا&test=فوتوغرافيا',
+			),
 
-		$url = 'http://www.example.com//فوتوغرافيا/?test=فوتوغرافيا';
-		$this->do_assertion_mb_parse_url( $url, 'http', 'www.example.com', '//فوتوغرافيا/', 'test=فوتوغرافيا' );
-
-		$url = '/فوتوغرافيا/?test=فوتوغرافيا';
-		$this->do_assertion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test=فوتوغرافيا' );
-
-		$url = '/فوتوغرافيا/?test2=فوتوغرافيا&test=فوتوغرافيا';
-		$this->do_assertion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test2=فوتوغرافيا&test=فوتوغرافيا' );
-
+		);
 	}
 
 	/**
