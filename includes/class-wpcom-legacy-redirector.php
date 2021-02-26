@@ -110,9 +110,10 @@ class WPCOM_Legacy_Redirector {
 	 * @param string     $from_url    URL or path that should be redirected; should have leading slash if path.
 	 * @param int|string $redirect_to The post ID or URL to redirect to.
 	 * @param bool       $validate    Validate $from_url and $redirect_to values.
-	 * @return bool|WP_Error True if inserted; false if not permitted; otherwise error upon validation issue.
+	 * @param bool       $return_id   Return the insertd post ID if successful, rather than boolean true.
+	 * @return bool|WP_Error True or post ID if inserted; false if not permitted; otherwise error upon validation issue.
 	 */
-	static function insert_legacy_redirect( $from_url, $redirect_to, $validate = true ) {
+	static function insert_legacy_redirect( $from_url, $redirect_to, $validate = true, $return_id = false ) {
 		if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) && ! is_admin() && ! apply_filters( 'wpcom_legacy_redirector_allow_insert', false ) ) {
 			// Never run on the front end.
 			return false;
@@ -148,9 +149,13 @@ class WPCOM_Legacy_Redirector {
 			return new WP_Error( 'invalid-redirect-url', 'Invalid redirect_to param; should be a post_id or a URL' );
 		}
 
-		wp_insert_post( $args );
+		$inserted_post_id = wp_insert_post( $args );
 
 		wp_cache_delete( $from_url_hash, self::CACHE_GROUP );
+
+		if ( $return_id ) {
+			return $inserted_post_id;
+		}
 
 		return true;
 	}
