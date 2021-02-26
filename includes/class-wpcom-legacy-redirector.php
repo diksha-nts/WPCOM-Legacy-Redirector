@@ -74,7 +74,7 @@ class WPCOM_Legacy_Redirector {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$redirect_data = Lookup::get_redirect_data( self::normalise_url( $_SERVER['REQUEST_URI'] ) );
 
-		if ( ! $redirect_data ) {
+		if ( ! $redirect_data || ! isset( $redirect_data['redirect_uri'] ) ) {
 			return;
 		}
 
