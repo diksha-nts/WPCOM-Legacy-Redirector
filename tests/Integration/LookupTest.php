@@ -10,10 +10,14 @@ use WPCOM_Legacy_Redirector;
  */
 final class LookupTest extends TestCase {
 	/**
-	 * Test Lookup::get_redirect_uri
+	 * Test Lookup::get_redirect_uri.
 	 *
 	 * @covers Lookup::get_redirect_uri
 	 * @dataProvider get_protected_redirect_data
+	 *
+	 * @param [type] $from_url        Redirect From URL.
+	 * @param [type] $to_url          Redirect To URL.
+	 * @param [type] $redirect_status Redirect Status Code.
 	 * @return void
 	 */
 	public function test_get_redirect_uri( $from_url, $to_url, $redirect_status ) {
@@ -38,12 +42,12 @@ final class LookupTest extends TestCase {
 				'/some_other_page',
 				'301',
 			),
-			'redirect_simple' => array(
+			'redirect_simple'             => array(
 				'/test',
 				'/',
 				'301',
 			),
-			'redirect_unicode_no_query' => array(
+			'redirect_unicode_no_query'   => array(
 				'/فوتوغرافيا/',
 				'/',
 				'301',

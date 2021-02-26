@@ -106,7 +106,7 @@ final class Lookup {
 	}
 
 		/**
-		 * Get redirect data status and url based on the provided url
+		 * Get redirect data status and url based on the provided url.
 		 *
 		 * To make the redirection match, we take a full URL as $url parameter, decode it and keep
 		 * only the PATH and QUERY part of it to look for known matches.
