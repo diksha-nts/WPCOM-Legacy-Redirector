@@ -108,9 +108,13 @@ final class Lookup {
 		/**
 		 * Get redirect data status and url based on the provided url
 		 *
-		 * @param string $url
+		 * To make the redirection match, we take a full URL as $url parameter, decode it and keep
+		 * only the PATH and QUERY part of it to look for known matches.
 		 *
-		 * @return false|array
+		 * @param string $url URL to find redirection for, can be a full size url,
+		 *                    we do the necessary stripping inside
+		 * @return false|array We return false or an array with target redirection path
+		 *                     and redirection code
 		 */
 	public static function get_redirect_data( $url ) {
 

@@ -26,36 +26,36 @@ final class UtilsTest extends TestCase {
 		);
 
 		$url = 'https://www.example.org';
-		$this->do_assetion_mb_parse_url( $url, 'https', 'www.example.org', '', '' );
+		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.org', '', '' );
 
 		$url = 'https://www.example.org/';
-		$this->do_assetion_mb_parse_url( $url, 'https', 'www.example.org', '/', '' );
+		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.org', '/', '' );
 
 		$url = 'https://www.example.com/test';
-		$this->do_assetion_mb_parse_url( $url, 'https', 'www.example.com', '/test', '' );
+		$this->do_assertion_mb_parse_url( $url, 'https', 'www.example.com', '/test', '' );
 
 		$url = 'http://www.example.com//فوتوغرافيا/?test=فوتوغرافيا';
-		$this->do_assetion_mb_parse_url( $url, 'http', 'www.example.com', '//فوتوغرافيا/', 'test=فوتوغرافيا' );
+		$this->do_assertion_mb_parse_url( $url, 'http', 'www.example.com', '//فوتوغرافيا/', 'test=فوتوغرافيا' );
 
 		$url = '/فوتوغرافيا/?test=فوتوغرافيا';
-		$this->do_assetion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test=فوتوغرافيا' );
+		$this->do_assertion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test=فوتوغرافيا' );
 
 		$url = '/فوتوغرافيا/?test2=فوتوغرافيا&test=فوتوغرافيا';
-		$this->do_assetion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test2=فوتوغرافيا&test=فوتوغرافيا' );
+		$this->do_assertion_mb_parse_url( $url, '', '', '/فوتوغرافيا/', 'test2=فوتوغرافيا&test=فوتوغرافيا' );
 
 	}
 
 	/**
-	 * Do assertion method for testing mb_parse_url
+	 * Do assertion method for testing mb_parse_url().
 	 *
-	 * @param string $url
-	 * @param string $expected_scheme
-	 * @param string $expected_host
-	 * @param string $expected_path
-	 * @param string $expected_query
+	 * @param string $url             URL to test redirection against, can be a full blown URL with schema.
+	 * @param string $expected_scheme Expected URL schema return.
+	 * @param string $expected_host   Expected URL hostname return.
+	 * @param string $expected_path   Expected URL path return.
+	 * @param string $expected_query  Expected URL query return.
 	 * @return void
 	 */
-	private function do_assetion_mb_parse_url( $url, $expected_scheme, $expected_host, $expected_path, $expected_query ) {
+	private function do_assertion_mb_parse_url( $url, $expected_scheme, $expected_host, $expected_path, $expected_query ) {
 		$path_info = Utils::mb_parse_url( $url );
 
 		if ( ! isset( $path_info['scheme'] ) ) {
@@ -72,7 +72,7 @@ final class UtilsTest extends TestCase {
 		}
 
 		$this->assertTrue( is_array( $path_info ) );
-		$this->assertTrue( sizeof( $path_info ) > 1 ? true : false );
+		$this->assertTrue( count( $path_info ) > 1 ? true : false );
 		$this->assertSame( $expected_host, $path_info['host'] );
 		$this->assertSame( $expected_path, $path_info['path'] );
 		$this->assertSame( $expected_query, $path_info['query'] );
