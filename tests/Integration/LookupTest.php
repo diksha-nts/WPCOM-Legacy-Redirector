@@ -15,9 +15,9 @@ final class LookupTest extends TestCase {
 	 * @covers Lookup::get_redirect_uri
 	 * @dataProvider get_protected_redirect_data
 	 *
-	 * @param [type] $from_url        Redirect From URL.
-	 * @param [type] $to_url          Redirect To URL.
-	 * @param [type] $redirect_status Redirect Status Code.
+	 * @param string $from_url        Redirect From URL.
+	 * @param string $to_url          Redirect To URL.
+	 * @param int    $redirect_status Redirect Status Code.
 	 * @return void
 	 */
 	public function test_get_redirect_uri( $from_url, $to_url, $redirect_status ) {
