@@ -15,6 +15,7 @@ final class UtilsTest extends TestCase {
 	 * Setup any mocks before tests.
 	 */
 	public function set_up() {
+		parent::set_up();
 		new MonkeyStubs();
 	}
 
@@ -24,11 +25,11 @@ final class UtilsTest extends TestCase {
 	 * @dataProvider get_protected_redirect_data
 	 * @covers \Automattic\LegacyRedirector\Utils::mb_parse_url
 	 *
-	 * @param [type] $url             Full URL to parse.
-	 * @param [type] $expected_schema Expected return schema.
-	 * @param [type] $expected_domain Expected return domain.
-	 * @param [type] $expected_path   Expected return path.
-	 * @param [type] $expected_query  Expected return query.
+	 * @param string $url             Full URL to parse.
+	 * @param string $expected_schema Expected return schema.
+	 * @param string $expected_domain Expected return domain.
+	 * @param string $expected_path   Expected return path.
+	 * @param string $expected_query  Expected return query.
 	 * @return void
 	 */
 	public function test_mb_parse_url( $url, $expected_schema, $expected_domain, $expected_path, $expected_query ) {
