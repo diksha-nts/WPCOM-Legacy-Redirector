@@ -86,6 +86,7 @@ class WPCOM_Legacy_Redirector {
 			wp_safe_redirect( $redirect_data['redirect_uri'], $redirect_data['redirect_status'] );
 		}
 
+		exit;
 	}
 
 	/**
