@@ -13,10 +13,8 @@ final class UtilsTest extends TestCase {
 
 	/**
 	 * Setup any mocks before tests.
-	 *
-	 * @before
 	 */
-	public static function initialSetup() {
+	public function set_up() {
 		new MonkeyStubs();
 	}
 
