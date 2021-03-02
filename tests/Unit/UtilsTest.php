@@ -4,20 +4,11 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 use Automattic\LegacyRedirector\Utils;
 use Brain\Monkey;
 use Automattic\LegacyRedirector\Tests\Unit\MonkeyStubs;
-use Yoast\WPTestUtils\BrainMonkey\YoastTestCase;
 
 /**
  * Capability Class Unit Test
  */
-final class UtilsTest extends YoastTestCase {
-
-	/**
-	 * Setup any mocks before tests.
-	 */
-	protected function set_up() {
-		parent::set_up();
-		new MonkeyStubs();
-	}
+final class UtilsTest extends MonkeyStubs {
 
 	/**
 	 * Tests Utils::normalise_url().

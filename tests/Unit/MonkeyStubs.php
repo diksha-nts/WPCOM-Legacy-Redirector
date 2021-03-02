@@ -3,10 +3,18 @@
 namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Brain\Monkey;
+use Yoast\WPTestUtils\BrainMonkey\YoastTestCase;
 
-final class MonkeyStubs {
+class MonkeyStubs extends YoastTestCase {
 
-	public function __construct() {
+	/**
+	 * Sets up test fixtures and additional function stubs.
+	 *
+	 * @return void
+	 */
+	protected function set_up() {
+		parent::set_up();
+
 		Monkey\Functions\stubs(
 			array(
 				'wp_parse_url' => static function ( $url, $component ) {
