@@ -227,7 +227,7 @@ class WPCOM_Legacy_Redirector {
 	public static function normalise_url( $url ) {
 
 		// Sanitise the URL first rather than trying to normalise a non-URL.
-		$url = esc_url_raw( wp_unslash( $url ) );
+		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {
 			return new WP_Error( 'invalid-redirect-url', 'The URL does not validate' );
 		}
