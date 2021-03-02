@@ -12,6 +12,9 @@ final class MonkeyStubs {
 				'wp_parse_url' => static function ( $url, $component ) {
 					return parse_url( $url, $component );
 				},
+				'esc_url_raw'  => static function( $value ) {
+					return $value;
+				},
 			)
 		);
 	}

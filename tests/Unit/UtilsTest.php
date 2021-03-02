@@ -3,20 +3,40 @@ namespace Automattic\LegacyRedirector\Tests\Unit;
 
 use Automattic\LegacyRedirector\Utils;
 use Brain\Monkey;
-use Yoast\WPTestUtils\BrainMonkey\TestCase;
 use Automattic\LegacyRedirector\Tests\Unit\MonkeyStubs;
+use Yoast\WPTestUtils\BrainMonkey\YoastTestCase;
 
 /**
  * Capability Class Unit Test
  */
-final class UtilsTest extends TestCase {
+final class UtilsTest extends YoastTestCase {
 
 	/**
 	 * Setup any mocks before tests.
 	 */
-	public function set_up() {
+	protected function set_up() {
 		parent::set_up();
 		new MonkeyStubs();
+	}
+
+	/**
+	 * Tests Utils::normalise_url().
+	 *
+	 * @dataProvider get_protected_redirect_data_full_url_only
+	 * @covers \Automattic\LegacyRedirector\Utils::normalise_url
+	 *
+	 * @param string $url             Full URL to parse.
+	 * @param string $expected_schema Expected return schema.
+	 * @param string $expected_domain Expected return domain.
+	 * @param string $expected_path   Expected return path.
+	 * @param string $expected_query  Expected return query.
+	 * @return void
+	 */
+	public function test_normalise_url( $url, $expected_schema, $expected_domain, $expected_path, $expected_query ) {
+
+		$expected_return = $expected_path . ( $expected_query ? '?' . $expected_query : '' );
+		$this->assertEquals( $expected_return, Utils::normalise_url( $url ) );
+
 	}
 
 	/**
@@ -39,6 +59,30 @@ final class UtilsTest extends TestCase {
 	}
 
 	/**
+	 * Data provider for tests methods for normalise_url tests
+	 *
+	 * @return array
+	 */
+	public function get_protected_redirect_data_full_url_only() {
+		return array(
+			'redirect_simple_url_no_end_slash'           => array(
+				'https://www.example1.org/',
+				'https',
+				'www.example1.org',
+				'/',
+				'',
+			),
+			'redirect_normal_path_with_multiple_slashes' => array(
+				'https://www.example1.org///test///?test2=123&test=456',
+				'https',
+				'www.example1.org',
+				'///test///',
+				'test2=123&test=456',
+			),
+		);
+	}
+
+	/**
 	 * Data provider for tests methods
 	 *
 	 * @return array
@@ -46,30 +90,30 @@ final class UtilsTest extends TestCase {
 	public function get_protected_redirect_data() {
 		return array(
 			'redirect_simple_url_no_end_slash'   => array(
-				'https://www.example.org',
+				'https://www.example1.org',
 				'https',
-				'www.example.org',
+				'www.example1.org',
 				'',
 				'',
 			),
 			'redirect_simple_url_with_end_slash' => array(
-				'http://www.example.org/',
+				'http://www.example2.org/',
 				'http',
-				'www.example.org',
+				'www.example2.org',
 				'/',
 				'',
 			),
 			'redirect_url_with_path'             => array(
-				'https://www.example.com/test',
+				'https://www.example3.com/test',
 				'https',
-				'www.example.com',
+				'www.example3.com',
 				'/test',
 				'',
 			),
 			'redirect_unicode_url_with_query'    => array(
-				'http://www.example.com//فوتوغرافيا/?test=فوتوغرافيا',
+				'http://www.example4.com//فوتوغرافيا/?test=فوتوغرافيا',
 				'http',
-				'www.example.com',
+				'www.example4.com',
 				'//فوتوغرافيا/',
 				'test=فوتوغرافيا',
 			),
