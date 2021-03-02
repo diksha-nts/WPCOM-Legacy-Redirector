@@ -225,7 +225,40 @@ class WPCOM_Legacy_Redirector {
 	 * @return string|WP_Error Transformed URL; error if validation failed.
 	 */
 	public static function normalise_url( $url ) {
-		return Utils::normalise_url( $url );
+
+		// Sanitise the URL first rather than trying to normalise a non-URL.
+		$url = esc_url_raw( wp_unslash( $url ) );
+		if ( empty( $url ) ) {
+			return new WP_Error( 'invalid-redirect-url', 'The URL does not validate' );
+		}
+
+		// Break up the URL into it's constituent parts.
+		$components = Utils::mb_parse_url( $url );
+
+		// Avoid playing with unexpected data.
+		if ( ! is_array( $components ) ) {
+			return new WP_Error( 'url-parse-failed', 'The URL could not be parsed' );
+		}
+
+		// We should have at least a path or query.
+		if ( ! isset( $components['path'] ) && ! isset( $components['query'] ) ) {
+			return new WP_Error( 'url-parse-failed', 'The URL contains neither a path nor query string' );
+		}
+
+		// Make sure $components['query'] is set, to avoid errors.
+		$components['query'] = ( isset( $components['query'] ) ) ? $components['query'] : '';
+
+		// All we want is path and query strings
+		// Note this strips hashes (#) too
+		// @todo should we destory the query strings and rebuild with `add_query_arg()`?
+		$normalised_url = $components['path'];
+
+		// Only append '?' and the query if there is one.
+		if ( ! empty( $components['query'] ) ) {
+			$normalised_url = $components['path'] . '?' . $components['query'];
+		}
+
+		return $normalised_url;
 	}
 
 	/**
