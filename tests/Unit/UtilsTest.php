@@ -70,6 +70,20 @@ final class UtilsTest extends MonkeyStubs {
 				'///test///',
 				'test2=123&test=456',
 			),
+			'redirect_ascii_path_with_multiple_slashes_and_query' => array(
+				'https://www.example1.org///test///?فوتوغرافيا/?test=فوتوغرافيا',
+				'https',
+				'www.example1.org',
+				'///test///',
+				'فوتوغرافيا/?test=فوتوغرافيا',
+			),
+			'redirect_ascii_path_with_multiple_slashes' => array(
+				'https://www.example1.org//فوتوغرافيا/?test=فوتوغرافيا',
+				'https',
+				'www.example1.org',
+				'//فوتوغرافيا/',
+				'test=فوتوغرافيا',
+			),
 		);
 	}
 
