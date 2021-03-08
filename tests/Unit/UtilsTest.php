@@ -124,6 +124,5 @@ final class UtilsTest extends MonkeyStubs {
 		$this->assertSame( $expected_host, $path_info['host'] );
 		$this->assertSame( $expected_path, $path_info['path'] );
 		$this->assertSame( $expected_query, $path_info['query'] );
-
 	}
 }
