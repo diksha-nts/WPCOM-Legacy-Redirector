@@ -119,8 +119,8 @@ final class UtilsTest extends MonkeyStubs {
 			$path_info['query'] = '';
 		}
 
-		$this->assertTrue( is_array( $path_info ) );
-		$this->assertTrue( count( $path_info ) > 1 ? true : false );
+		$this->assertIsArray( $path_info );
+		$this->assertGreaterThan( 1, count( $path_info ) );
 		$this->assertSame( $expected_host, $path_info['host'] );
 		$this->assertSame( $expected_path, $path_info['path'] );
 		$this->assertSame( $expected_query, $path_info['query'] );
