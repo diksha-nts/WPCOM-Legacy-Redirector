@@ -227,10 +227,11 @@ class WPCOM_Legacy_Redirector {
 	 * @return \WP_Error | void
 	 */
 	public static function throw_error( $code, $message ) {
-		if ( class_exists( 'WP_Error' ) ) {
-			return new WP_Error( $code, $message );
+
+		if ( class_exists( '\WP_Error' ) ) {
+			return new \WP_Error( $code, $message );
 		}
-		
+
 		throw new \Exception( $message );
 	}
 
