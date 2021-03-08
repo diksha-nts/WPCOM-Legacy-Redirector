@@ -5,11 +5,20 @@ namespace Automattic\LegacyRedirector;
 final class Utils {
 
 	/**
-	 * UTF-8 aware parse_url() replacement.
+	 * UTF-8 aware wp_parse_url() replacement.
+	 *
+	 * Sample Input: https://www.example1.org//فوتوغرافيا/?test=فوتوغرافيا
+	 * Sample Output: Array (
+	 *                  [scheme] => https
+	 *                  [host] => www.example1.org
+	 *                  [path] => //فوتوغرافيا/
+	 *                  [query] => test=فوتوغرافيا
+	 *                ) .
 	 *
 	 * @throws \InvalidArgumentException Malformed URL.
 	 *
-	 * @param string $url        The URL to parse.
+	 * @param string $url        The URL to parse. We will try and encode all url characters except
+	 *                           reserved URL chars https://developers.google.com/maps/documentation/urls/url-encoding.
 	 * @param int    $component  Optional. The specific component to retrieve. Use one of the
 	 *                           PHP predefined constants to specify which one. Defaults
 	 *                           to -1 (= return all parts as an array).
@@ -19,7 +28,7 @@ final class Utils {
 	 */
 	public static function mb_parse_url( $url, $component = -1 ) {
 		$encoded_url = preg_replace_callback(
-			'|[^:/@?&=#]+|usD',
+			'|[^!*\'();:@&=+$,\/?%#\[\]]+|usD',
 			function ( $matches ) {
 				return urlencode( $matches[0] );
 			},
