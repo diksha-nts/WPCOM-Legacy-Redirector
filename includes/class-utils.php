@@ -9,10 +9,10 @@ final class Utils {
 	 *
 	 * @throws \InvalidArgumentException Malformed URL.
 	 *
-	 * @param string $url       The URL to parse.
-	 * @param int    $component Optional. The specific component to retrieve. Use one of the
-	 *                          PHP predefined constants to specify which one. Defaults
-	 *                          to -1 (= return all parts as an array).
+	 * @param string $url        The URL to parse.
+	 * @param int    $component  Optional. The specific component to retrieve. Use one of the
+	 *                           PHP predefined constants to specify which one. Defaults
+	 *                           to -1 (= return all parts as an array).
 	 * @return string|array|null Array of URL components on success; When a specific component has been
 	 *                           requested: null if the component doesn't exist in the given URL; a
 	 *                           string (or in the case of PHP_URL_PORT, integer) when it does.
