@@ -222,8 +222,8 @@ class WPCOM_Legacy_Redirector {
 	 *
 	 * @throws \Exception $message.
 	 *
-	 * @param [type] $code    Error code.
-	 * @param [type] $message Error message.
+	 * @param string $code    Error code.
+	 * @param string $message Error message.
 	 * @return \WP_Error | void
 	 */
 	public static function throw_error( $code, $message ) {
