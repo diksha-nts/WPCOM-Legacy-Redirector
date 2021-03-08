@@ -36,7 +36,14 @@ final class RedirectsTest extends MonkeyStubs {
 	 */
 	public function get_protected_redirect_data_full_url_only() {
 		return array(
-			'redirect_simple_url_no_end_slash'           => array(
+			/*'redirect_simple_url_no_end_slash'           => array(
+				'https://www.example1.org',
+				'https',
+				'www.example1.org',
+				'',
+				'',
+			),*/
+			'redirect_simple_url_with_end_slash'           => array(
 				'https://www.example1.org/',
 				'https',
 				'www.example1.org',
