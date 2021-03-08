@@ -148,7 +148,7 @@ class WPCOM_Legacy_Redirector {
 		} elseif ( false !== Utils::mb_parse_url( $redirect_to ) ) {
 			$args['post_excerpt'] = esc_url_raw( $redirect_to );
 		} else {
-			return new WP_Error( 'invalid-redirect-url', 'Invalid redirect_to param; should be a post_id or a URL' );
+			return self::throw_error( 'invalid-redirect-url', 'Invalid redirect_to param; should be a post_id or a URL' );
 		}
 
 		$inserted_post_id = wp_insert_post( $args );
@@ -218,6 +218,24 @@ class WPCOM_Legacy_Redirector {
 	}
 
 	/**
+	 * Throws new error method
+	 *
+	 * @throws \Exception $message.
+	 *
+	 * @param [type] $code    Error code.
+	 * @param [type] $message Error message.
+	 * @return void
+	 */
+	public static function throw_error( $code, $message ) {
+		if ( class_exists( 'WP_Error' ) ) {
+			new WP_Error( $code, $message );
+		} else {
+			throw new \Exception( $message );
+		}
+
+	}
+
+	/**
 	 * Takes a request URL and "normalises" it, stripping common elements.
 	 * Removes scheme and host from the URL, as redirects should be independent of these.
 	 *
@@ -229,7 +247,7 @@ class WPCOM_Legacy_Redirector {
 		// Sanitise the URL first rather than trying to normalise a non-URL.
 		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-redirect-url', 'The URL does not validate' );
+			return self::throw_error( 'invalid-redirect-url', 'The URL does not validate' );
 		}
 
 		// Break up the URL into it's constituent parts.
@@ -237,12 +255,12 @@ class WPCOM_Legacy_Redirector {
 
 		// Avoid playing with unexpected data.
 		if ( ! is_array( $components ) ) {
-			return new WP_Error( 'url-parse-failed', 'The URL could not be parsed' );
+			return self::throw_error( 'url-parse-failed', 'The URL could not be parsed' );
 		}
 
 		// We should have at least a path or query.
 		if ( ! isset( $components['path'] ) && ! isset( $components['query'] ) ) {
-			return new WP_Error( 'url-parse-failed', 'The URL contains neither a path nor query string' );
+			return self::throw_error( 'url-parse-failed', 'The URL contains neither a path nor query string' );
 		}
 
 		// Make sure $components['query'] is set, to avoid errors.

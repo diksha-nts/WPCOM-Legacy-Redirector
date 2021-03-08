@@ -27,8 +27,7 @@ final class RedirectsTest extends MonkeyStubs {
 		$expected_return = $expected_path . ( $expected_query ? '?' . $expected_query : '' );
 
 		if ( 'error' === $expected_schema ) {
-			$this->assertInstanceOf( $expected_domain, WPCOM_Legacy_Redirector::normalise_url( $url ), 'blah' );
-			return;
+			$this->expectException( $expected_domain );
 		}
 
 		$this->assertEquals( $expected_return, WPCOM_Legacy_Redirector::normalise_url( $url ) );
@@ -45,7 +44,7 @@ final class RedirectsTest extends MonkeyStubs {
 			'redirect_simple_url_no_end_slash'           => array(
 				'https://www.example1.org',
 				'error',
-				'WP_Error',
+				'Exception',
 				'',
 				'',
 			),
