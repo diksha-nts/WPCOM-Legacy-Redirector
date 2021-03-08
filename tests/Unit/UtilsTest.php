@@ -77,6 +77,13 @@ final class UtilsTest extends MonkeyStubs {
 				'/فوتوغرافيا/',
 				'test2=فوتوغرافيا&test=فوتوغرافيا',
 			),
+			'redirect_malformed_url'             => array(
+				'http://',
+				'exception',
+				'InvalidArgumentException',
+				'',
+				'',
+			),
 
 		);
 	}
@@ -85,13 +92,18 @@ final class UtilsTest extends MonkeyStubs {
 	 * Do assertion method for testing mb_parse_url().
 	 *
 	 * @param string $url             URL to test redirection against, can be a full blown URL with schema.
-	 * @param string $expected_scheme Expected URL schema return.
-	 * @param string $expected_host   Expected URL hostname return.
+	 * @param string $expected_scheme Expected URL schema return. | `exception` string for Exceptions.
+	 * @param string $expected_host   Expected URL hostname return. | Exception Type String, like `InvalidArgumentException`.
 	 * @param string $expected_path   Expected URL path return.
 	 * @param string $expected_query  Expected URL query return.
 	 * @return void
 	 */
 	private function do_assertion_mb_parse_url( $url, $expected_scheme, $expected_host, $expected_path, $expected_query ) {
+
+		if ( 'exception' === $expected_scheme ) {
+			$this->expectException( $expected_host );
+		}
+
 		$path_info = Utils::mb_parse_url( $url );
 
 		if ( ! isset( $path_info['scheme'] ) ) {
