@@ -224,15 +224,14 @@ class WPCOM_Legacy_Redirector {
 	 *
 	 * @param [type] $code    Error code.
 	 * @param [type] $message Error message.
-	 * @return void
+	 * @return \WP_Error | void
 	 */
 	public static function throw_error( $code, $message ) {
 		if ( class_exists( 'WP_Error' ) ) {
-			new WP_Error( $code, $message );
-		} else {
-			throw new \Exception( $message );
+			return new WP_Error( $code, $message );
 		}
-
+		
+		throw new \Exception( $message );
 	}
 
 	/**
