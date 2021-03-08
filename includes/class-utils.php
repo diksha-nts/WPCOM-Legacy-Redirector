@@ -19,7 +19,7 @@ final class Utils {
 	 */
 	public static function mb_parse_url( $url, $component = -1 ) {
 		$encoded_url = preg_replace_callback(
-			'%[^:/@?&=#]+%usD',
+			'|[^:/@?&=#]+|usD',
 			function ( $matches ) {
 				return urlencode( $matches[0] );
 			},
