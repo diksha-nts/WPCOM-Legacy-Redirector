@@ -16,8 +16,8 @@ final class RedirectsTest extends MonkeyStubs {
 	 * @covers \Automattic\LegacyRedirector\Utils::normalise_url
 	 *
 	 * @param string $url             Full URL to parse.
-	 * @param string $expected_schema Expected return schema.
-	 * @param string $expected_domain Expected return domain.
+	 * @param string $expected_schema Expected return schema. | `error` string for custom error.
+	 * @param string $expected_domain Expected return domain. | Expected Instance classname, can be `WP_Error`.
 	 * @param string $expected_path   Expected return path.
 	 * @param string $expected_query  Expected return query.
 	 * @return void
@@ -25,6 +25,12 @@ final class RedirectsTest extends MonkeyStubs {
 	public function test_normalise_url( $url, $expected_schema, $expected_domain, $expected_path, $expected_query ) {
 
 		$expected_return = $expected_path . ( $expected_query ? '?' . $expected_query : '' );
+
+		if ( 'error' === $expected_schema ) {
+			$this->assertInstanceOf( $expected_domain, WPCOM_Legacy_Redirector::normalise_url( $url ), 'blah' );
+			return;
+		}
+
 		$this->assertEquals( $expected_return, WPCOM_Legacy_Redirector::normalise_url( $url ) );
 
 	}
@@ -36,14 +42,14 @@ final class RedirectsTest extends MonkeyStubs {
 	 */
 	public function get_protected_redirect_data_full_url_only() {
 		return array(
-			/*'redirect_simple_url_no_end_slash'           => array(
+			'redirect_simple_url_no_end_slash'           => array(
 				'https://www.example1.org',
-				'https',
-				'www.example1.org',
+				'error',
+				'WP_Error',
 				'',
 				'',
-			),*/
-			'redirect_simple_url_with_end_slash'           => array(
+			),
+			'redirect_simple_url_with_end_slash'         => array(
 				'https://www.example1.org/',
 				'https',
 				'www.example1.org',
@@ -64,7 +70,7 @@ final class RedirectsTest extends MonkeyStubs {
 				'///test///',
 				'فوتوغرافيا/?test=فوتوغرافيا',
 			),
-			'redirect_ascii_path_with_multiple_slashes' => array(
+			'redirect_ascii_path_with_multiple_slashes'  => array(
 				'https://www.example1.org//فوتوغرافيا/?test=فوتوغرافيا',
 				'https',
 				'www.example1.org',
