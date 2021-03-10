@@ -17,7 +17,7 @@ final class CapabilityTest extends TestCase {
 	 */
 	public function tearDown() {
 
-		( new Capability() )->unregister();
+		(new Capability())->unregister();
 	}
 
 	/**
