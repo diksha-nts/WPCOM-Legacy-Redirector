@@ -9,6 +9,7 @@ use WPCOM_Legacy_Redirector;
  * CapabilityTest class.
  */
 final class LookupTest extends TestCase {
+	
 	/**
 	 * Test Lookup::get_redirect_uri.
 	 *
