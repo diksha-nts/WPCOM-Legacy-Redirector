@@ -7,7 +7,7 @@ use WPCOM_Legacy_Redirector;
 /**
  * Capability Class Unit Test
  */
-final class RedirectsTest extends MonkeyStubs {
+final class NormaliseTest extends MonkeyStubs {
 
 	/**
 	 * Tests Utils::normalise_url().
@@ -30,7 +30,7 @@ final class RedirectsTest extends MonkeyStubs {
 			$this->expectException( $expected_domain );
 		}
 
-		$this->assertEquals( $expected_return, WPCOM_Legacy_Redirector::normalise_url( $url ) );
+		$this->assertSame( $expected_return, WPCOM_Legacy_Redirector::normalise_url( $url ) );
 
 	}
 
