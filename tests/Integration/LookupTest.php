@@ -22,7 +22,7 @@ final class LookupTest extends TestCase {
 	 */
 	public function test_get_redirect_uri( $from_url, $to_url, $redirect_status ) {
 
-		$this->assertTrue( WPCOM_Legacy_Redirector::insert_legacy_redirect( $from_url, $to_url, false ) );
+		WPCOM_Legacy_Redirector::insert_legacy_redirect( $from_url, $to_url, false );
 
 		$redirect_data = Lookup::get_redirect_data( $from_url );
 
