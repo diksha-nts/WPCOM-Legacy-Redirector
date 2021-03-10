@@ -20,9 +20,7 @@ class MonkeyStubs extends YoastTestCase {
 				'wp_parse_url' => static function ( $url, $component ) {
 					return parse_url( $url, $component );
 				},
-				'esc_url_raw'  => static function( $value ) {
-					return $value;
-				},
+				'esc_url_raw', // Return 1st param unchanged.
 			)
 		);
 	}
