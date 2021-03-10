@@ -32,6 +32,7 @@ final class LookupTest extends TestCase {
 
 	}
 
+	
 	/**
 	 * Data provider for tests methods
 	 *
