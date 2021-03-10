@@ -86,7 +86,7 @@ class WPCOM_Legacy_Redirector {
 			wp_safe_redirect( $redirect_data['redirect_uri'], $redirect_data['redirect_status'] );
 		}
 
-		// We need this here to make sure wp_safe_redirect redirects correctly.
+		// We need this here to make sure wp_safe_redirect() redirects correctly.
 		exit;
 	}
 
