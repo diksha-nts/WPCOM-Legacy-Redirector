@@ -9,7 +9,7 @@ use WPCOM_Legacy_Redirector;
  * CapabilityTest class.
  */
 final class LookupTest extends TestCase {
-	
+
 	/**
 	 * Test Lookup::get_redirect_uri.
 	 *
@@ -32,7 +32,6 @@ final class LookupTest extends TestCase {
 
 	}
 
-	
 	/**
 	 * Data provider for tests methods
 	 *
@@ -45,12 +44,12 @@ final class LookupTest extends TestCase {
 				'/some_other_page',
 				'301',
 			),
-			'redirect_simple'             => array(
+			'redirect_simple'                              => array(
 				'/test',
 				'/',
 				'301',
 			),
-			'redirect_unicode_no_query'   => array(
+			'redirect_unicode_no_query'                    => array(
 				'/فوتوغرافيا/',
 				'/',
 				'301',
