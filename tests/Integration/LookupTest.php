@@ -30,6 +30,7 @@ final class LookupTest extends TestCase {
 		$this->assertEquals( $redirect_status, $redirect_data['redirect_status'] );
 
 	}
+
 	/**
 	 * Data provider for tests methods
 	 *
@@ -37,7 +38,7 @@ final class LookupTest extends TestCase {
 	 */
 	public function get_protected_redirect_data() {
 		return array(
-			'redirect_unicode_with_query' => array(
+			'redirect unicode characters with querystring' => array(
 				'/فوتوغرافيا/?test=فوتوغرافيا',
 				'/some_other_page',
 				'301',
