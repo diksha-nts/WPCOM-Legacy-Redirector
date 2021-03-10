@@ -78,7 +78,7 @@ class WPCOM_Legacy_Redirector {
 			return;
 		}
 
-			// Third argument introduced to support the x_redirect_by header to denote WP redirect source.
+		// Third argument introduced to support the x_redirect_by header to denote WP redirect source.
 		if ( version_compare( get_bloginfo( 'version' ), '5.1.0', '>=' ) ) {
 			wp_safe_redirect( $redirect_data['redirect_uri'], $redirect_data['redirect_status'], WPCOM_LEGACY_REDIRECTOR_PLUGIN_NAME );
 		} else {
