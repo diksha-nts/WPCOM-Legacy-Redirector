@@ -55,21 +55,21 @@ final class NormaliseTest extends MonkeyStubs {
 				'/',
 				'',
 			),
-			'redirect_normal_path_with_multiple_slashes' => array(
+			'redirect_ascii_path_with_multiple_slashes' => array(
 				'https://www.example1.org///test///?test2=123&test=456',
 				'https',
 				'www.example1.org',
 				'///test///',
 				'test2=123&test=456',
 			),
-			'redirect_ascii_path_with_multiple_slashes_and_query' => array(
+			'redirect_non_ascii_path_with_multiple_slashes_and_query' => array(
 				'https://www.example1.org///test///?فوتوغرافيا/?test=فوتوغرافيا',
 				'https',
 				'www.example1.org',
 				'///test///',
 				'فوتوغرافيا/?test=فوتوغرافيا',
 			),
-			'redirect_ascii_path_with_multiple_slashes'  => array(
+			'redirect_non_ascii_path_with_multiple_slashes'  => array(
 				'https://www.example1.org//فوتوغرافيا/?test=فوتوغرافيا',
 				'https',
 				'www.example1.org',
