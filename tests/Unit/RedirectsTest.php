@@ -62,14 +62,14 @@ final class NormaliseTest extends MonkeyStubs {
 				'///test///',
 				'test2=123&test=456',
 			),
-			'redirect_non_ascii_path_with_multiple_slashes_and_query' => array(
+			'redirect_unicode_path_with_multiple_slashes_and_query' => array(
 				'https://www.example1.org///test///?فوتوغرافيا/?test=فوتوغرافيا',
 				'https',
 				'www.example1.org',
 				'///test///',
 				'فوتوغرافيا/?test=فوتوغرافيا',
 			),
-			'redirect_non_ascii_path_with_multiple_slashes'  => array(
+			'redirect_unicode_path_with_multiple_slashes'  => array(
 				'https://www.example1.org//فوتوغرافيا/?test=فوتوغرافيا',
 				'https',
 				'www.example1.org',
