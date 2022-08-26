@@ -208,8 +208,8 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 				}
 
 				if ( 0 == $i % 100 ) {
-					if ( function_exists( 'stop_the_insanity' ) ) {
-						stop_the_insanity();
+					if ( function_exists( 'vip_inmemory_cleanup' ) ) {
+						vip_inmemory_cleanup(); // stop_the_insanity() is deprecated in favour of vip_inmemory_cleanup()
 					}
 					sleep( 1 );
 				}
