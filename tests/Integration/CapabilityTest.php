@@ -7,6 +7,8 @@ use WP_User;
 
 /**
  * CapabilityTest class.
+ *
+ * @covers \Automattic\LegacyRedirector\Capability
  */
 final class CapabilityTest extends TestCase {
 
