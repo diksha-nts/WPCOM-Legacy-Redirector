@@ -7,6 +7,8 @@ use WP_User;
 
 /**
  * CapabilityTest class.
+ *
+ * @covers \Automattic\LegacyRedirector\Capability
  */
 final class CapabilityTest extends TestCase {
 
@@ -15,7 +17,7 @@ final class CapabilityTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function tearDown() {
+	public function tear_down() {
 
 		(new Capability())->unregister();
 	}
@@ -109,7 +111,7 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the role has the redirects capability, false otherwise.
 	 */
 	private function assertRoleHasRedirectsCapability( $role ) {
-		$user_id = $this->factory->user->create( array( 'role' => $role ) );
+		$user_id = self::factory()->user->create( array( 'role' => $role ) );
 		$user    = wp_set_current_user( $user_id );
 
 		return $this->assertUserHasRedirectCapability( $user );
@@ -122,7 +124,7 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the role does not have the redirects capability, false otherwise.
 	 */
 	private function assertRoleNotHasRedirectsCapability( $role ) {
-		$user_id = $this->factory->user->create( array( 'role' => $role ) );
+		$user_id = self::factory()->user->create( array( 'role' => $role ) );
 		$user    = wp_set_current_user( $user_id );
 
 		return $this->assertUserNotHasRedirectCapability( $user );
