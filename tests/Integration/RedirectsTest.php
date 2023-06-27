@@ -63,7 +63,7 @@ final class RedirectsTest extends TestCase {
 		$this->assertTrue( $redirect, 'insert_legacy_redirect() and return true, failed' );
 
 		$redirect = Lookup::get_redirect_uri( $from );
-		$this->assertEquals( $redirect, $to, 'get_redirect_uri(), failed' );
+		$this->assertEquals( $redirect, $to, 'get_redirect_uri(), failed - got "' . $redirect . '", expected "' . $to . '"' );
 	}
 
 	/**

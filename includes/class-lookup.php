@@ -1,7 +1,15 @@
 <?php
+/**
+ * Lookup class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector;
 
+/**
+ * Lookup class.
+ */
 final class Lookup {
 	const CACHE_GROUP = 'vip-legacy-redirect-2';
 
@@ -11,7 +19,7 @@ final class Lookup {
 	 * @param string $url URL to redirect (source).
 	 * @return string|bool Redirect URL if one was found; otherwise false.
 	 */
-	static function get_redirect_uri( $url ) {
+	public static function get_redirect_uri( $url ) {
 		$url = \WPCOM_Legacy_Redirector::normalise_url( $url );
 		if ( is_wp_error( $url ) ) {
 			return false;
@@ -77,7 +85,7 @@ final class Lookup {
 		 * @param string   $url                    Normalized source URL.
 		 */
 		$preservable_param_keys = apply_filters( 'wpcom_legacy_redirector_preserve_query_params', array(), $url );
-		
+
 		if ( ! is_array( $preservable_param_keys ) ) {
 			throw new \UnexpectedValueException( 'wpcom_legacy_redirector_preserve_query_params must return an array.' );
 		}
@@ -90,7 +98,7 @@ final class Lookup {
 
 		// Parse URL to get querystring parameters.
 		$url_query_params = wp_parse_url( $url, PHP_URL_QUERY );
-		
+
 		// No parameters in URL, so return early.
 		if ( empty( $url_query_params ) ) {
 			return array();
@@ -109,7 +117,7 @@ final class Lookup {
 	 * @param string $url URL to redirect (source).
 	 * @return string|int Redirect post ID (as string) if one was found; otherwise 0.
 	 */
-	static function get_redirect_post_id( $url ) {
+	public static function get_redirect_post_id( $url ) {
 		global $wpdb;
 
 		$url_hash = \WPCOM_Legacy_Redirector::get_url_hash( $url );

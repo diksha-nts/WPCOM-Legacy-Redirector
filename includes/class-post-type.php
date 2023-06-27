@@ -1,14 +1,32 @@
 <?php
+/**
+ * Post type class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector;
 
+/**
+ * Post type class.
+ */
 final class Post_Type {
 	const POST_TYPE = 'vip-legacy-redirect';
 
+	/**
+	 * Register the post type.
+	 *
+	 * @return void
+	 */
 	public function register() {
 		register_post_type( self::POST_TYPE, $this->get_args() );
 	}
 
+	/**
+	 * Get the post type labels.
+	 *
+	 * @return array
+	 */
 	protected function get_labels() {
 		return array(
 			'name'                  => _x( 'Redirect Manager', 'Post type general name', 'wpcom-legacy-redirector' ),
@@ -28,6 +46,11 @@ final class Post_Type {
 		);
 	}
 
+	/**
+	 * Get the post type arguments.
+	 *
+	 * @return array
+	 */
 	protected function get_args() {
 		return array(
 			'labels'             => $this->get_labels(),
