@@ -38,5 +38,10 @@
     "integration-test": [
       "@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist"
     ]
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
   }
 }
