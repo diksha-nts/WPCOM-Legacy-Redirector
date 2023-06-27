@@ -1,12 +1,29 @@
 <?php
+/**
+ * Redirects tests
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
 use \Automattic\LegacyRedirector\Lookup;
 use WPCOM_Legacy_Redirector;
 
+/**
+ * Redirects tests class.
+ */
 final class RedirectsTest extends TestCase {
 
+	/**
+	 * Data provider.
+	 *
+	 * Each item in the outermost array should be an array containing:
+	 * - $from path
+	 * - $to destination
+	 *
+	 * @return array<string, array>
+	 */
 	public function get_redirect_data() {
 		return array(
 			'redirect_simple'           => array(
@@ -26,7 +43,7 @@ final class RedirectsTest extends TestCase {
 			),
 
 			'redirect_unicode_in_path'  => array(
-				// https://www.w3.org/International/articles/idn-and-iri/
+				// See https://www.w3.org/International/articles/idn-and-iri/.
 				'/JP納豆',
 				'http://example.com',
 			),
@@ -34,8 +51,12 @@ final class RedirectsTest extends TestCase {
 	}
 
 	/**
+	 * Test redirect is inserted successfully and returns true.
+	 *
 	 * @dataProvider get_redirect_data
-	 * @covers WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 * @covers       WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 * @param string $from From path.
+	 * @param string $to   Destination.
 	 */
 	public function test_redirect_is_inserted_successfully_and_returns_true( $from, $to ) {
 		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
@@ -46,6 +67,8 @@ final class RedirectsTest extends TestCase {
 	}
 
 	/**
+	 * Test redirect is inserted successfully and returns a post ID.
+	 *
 	 * @covers WPCOM_Legacy_Redirector::insert_legacy_redirect
 	 */
 	public function test_redirect_is_inserted_successfully_and_returns_post_id() {
@@ -92,11 +115,15 @@ final class RedirectsTest extends TestCase {
 	}
 
 	/**
-	 * Verify that safelisted parameters are maintained on final redirect urls.
+	 * Verify that safelisted parameters are maintained on final redirect URLs.
 	 *
 	 * @dataProvider get_protected_redirect_data
-	 * @covers WPCOM_Legacy_Redirector::insert_legacy_redirect
-	 * @covers \Automattic\LegacyRedirector\Lookup::get_redirect_uri
+	 * @covers       WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 * @covers       \Automattic\LegacyRedirector\Lookup::get_redirect_uri
+	 * @param string $from           From path.
+	 * @param string $to             Destination.
+	 * @param string $protected_from From path with preserved params.
+	 * @param string $protected_to   Destination. with preserved params.
 	 */
 	public function test_protected_query_redirect( $from, $to, $protected_from, $protected_to ) {
 		add_filter(
