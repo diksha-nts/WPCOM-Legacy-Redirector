@@ -390,7 +390,7 @@ class WPCOM_Legacy_Redirector {
 	 * @return bool|string True on success, false if parent not found, 'private' if not published.
 	 */
 	public static function vip_legacy_redirect_parent_id( $post ) {
-		if ( true !== self::check_if_excerpt_is_home( $post ) ) {
+		if ( isset( $_POST['redirect_to'] ) && true !== self::check_if_excerpt_is_home( $post ) ) {
 			if ( null !== get_post( $post ) && 'publish' === get_post_status( $post ) ) {
 				return true;
 			}
