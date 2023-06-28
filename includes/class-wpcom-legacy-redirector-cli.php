@@ -1,4 +1,9 @@
 <?php
+/**
+ * WPCOM_Legacy_Redirector_CLI class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 use \Automattic\LegacyRedirector\Post_Type;
 
@@ -9,9 +14,21 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 	/**
 	 * Find domains redirected to, useful to populate the allowed_redirect_hosts filter.
 	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Get a list of the domains used as redirect destinations
+	 *     $ wp wpcom-legacy-redirector find-domains
+	 *     Finding domains  100% [========]
+	 *     Found 2 unique outbound domains.
+	 *     example.com
+	 *     example.org
+	 *
 	 * @subcommand find-domains
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Key-value associative arguments.
 	 */
-	function find_domains( $args, $assoc_args ) {
+	public function find_domains( $args, $assoc_args ) {
 		global $wpdb;
 
 		$posts_per_page = 500;
@@ -42,7 +59,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 			foreach ( $redirect_urls as $redirect_url ) {
 				$progress->tick();
 				if ( ! empty( $redirect_url ) ) {
-					$redirect_host = parse_url( $redirect_url, PHP_URL_HOST );
+					$redirect_host = wp_parse_url( $redirect_url, PHP_URL_HOST );
 					if ( $redirect_host ) {
 						$domains[] = $redirect_host;
 					}
@@ -58,7 +75,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 
 		$domains = array_unique( $domains );
 
-		WP_CLI::line( sprintf( 'Found %s unique outbound domains', number_format( count( $domains ) ) ) );
+		WP_CLI::line( sprintf( 'Found %s unique outbound domains.', number_format( count( $domains ) ) ) );
 
 		foreach ( $domains as $domain ) {
 			WP_CLI::line( $domain );
@@ -66,12 +83,32 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 	}
 
 	/**
-	 * Insert a single redirect
+	 * Insert a single redirect.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <from_url>
+	 * : The path to redirect from.
+	 *
+	 * <to_url>
+	 * : The redirect destination. Can be a full URL, or an integer post ID.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Insert redirect from /foo (must not exist) to /bar.
+	 *     $ wp wpcom-legacy-redirector insert-redirect /foo /bar
+	 *     Success: Inserted /foo -> /bar
+	 *
+	 *     # Insert redirect from /bar to post ID 5.
+	 *     $ wp wpcom-legacy-redirector insert-redirect bar 5
 	 *
 	 * @subcommand insert-redirect
 	 * @synopsis <from_url> <to_url>
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Key-value associative arguments.
 	 */
-	function insert_redirect( $args, $assoc_args ) {
+	public function insert_redirect( $args, $assoc_args ) {
 		$from_url = esc_url_raw( $args[0] );
 
 		if ( is_numeric( $args[1] ) ) {
@@ -98,11 +135,17 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 	 *
 	 * ## OPTIONS
 	 *
+	 * --meta-key=<name-of-meta-key>
+	 * : Name of the meta key to import from. The meta value contains the From value. The To is the post ID that the meta key is for.
+	 *
 	 * [--start=<start-offset>]
+	 * : Starting offset. Defaults to 0.
 	 *
 	 * [--end=<end-offset>]
+	 * : Ending offset. Defaults to 99999999.
 	 *
 	 * [--skip_dupes=<skip-dupes>]
+	 * : If set to true, then redirects for a From URL with an existing redirect will be skipped. Defaults to false.
 	 *
 	 * [--format=<format>]
 	 * : Render output in a particular format.
@@ -116,14 +159,26 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 	 * ---
 	 *
 	 * [--dry_run]
+	 * : If set, redirects are not imported. Defaults to false.
 	 *
 	 * [--verbose]
-	 * : Display notices for sucessful imports and duplicates (if skip_dupes is used)
+	 * : Display notices for successful imports and duplicates (if skip_dupes is used). Defaults to false.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Bulk import from a my-redirect meta key.
+	 *     $ wp wpcom-legacy-redirector import-from-meta --meta-key=my-redirect
+	 *     ---Live Run---
+	 *     Importing 143 redirects
+	 *     All of your redirects have been imported. Nice work!
 	 *
 	 * @subcommand import-from-meta
 	 * @synopsis --meta_key=<name-of-meta-key> [--start=<start-offset>] [--end=<end-offset>] [--skip_dupes=<skip-dupes>] [--format=<format>] [--dry_run] [--verbose]
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Key-value associative arguments.
 	 */
-	function import_from_meta( $args, $assoc_args ) {
+	public function import_from_meta( $args, $assoc_args ) {
 		define( 'WP_IMPORTING', true );
 
 		global $wpdb;
@@ -140,7 +195,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		if ( true === $dry_run ) {
 			WP_CLI::line( '---Dry Run---' );
 		} else {
-			WP_CLI::line( '---Live Run--' );
+			WP_CLI::line( '---Live Run---' );
 		}
 
 		$total_redirects = $wpdb->get_var(
@@ -165,7 +220,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 				$i++;
 				$progress->tick();
 
-				if ( true === $skip_dupes && 0 !== WPCOM_Legacy_Redirector::get_redirect_post_id( parse_url( $redirect->meta_value, PHP_URL_PATH ) ) ) {
+				if ( true === $skip_dupes && 0 !== WPCOM_Legacy_Redirector::get_redirect_post_id( wp_parse_url( $redirect->meta_value, PHP_URL_PATH ) ) ) {
 					if ( $verbose ) {
 						$notices[] = array(
 							'redirect_from' => $redirect->meta_value,
@@ -207,9 +262,9 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 					}
 				}
 
-				if ( 0 == $i % 100 ) {
+				if ( 0 === $i % 100 ) {
 					if ( function_exists( 'vip_inmemory_cleanup' ) ) {
-						vip_inmemory_cleanup(); // stop_the_insanity() is deprecated in favour of vip_inmemory_cleanup()
+						vip_inmemory_cleanup();
 					}
 					sleep( 1 );
 				}
@@ -222,16 +277,26 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		if ( count( $notices ) > 0 ) {
 			WP_CLI\Utils\format_items( $format, $notices, array( 'redirect_from', 'redirect_to', 'message' ) );
 		} else {
-			echo WP_CLI::colorize( '%GAll of your redirects have been imported. Nice work!%n ' );
+			WP_CLI::log( WP_CLI::colorize( '%GAll of your redirects have been imported. Nice work!%n ' ) );
 		}
 	}
 
 	/**
-	 * Bulk import redirects from a CSV file matching the following structure:
+	 * Bulk import redirects from a CSV file.
 	 *
-	 * redirect_from_path,(redirect_to_post_id|redirect_to_path|redirect_to_url)
+	 * CSV should match the following structure:
+	 *   redirect_from_path,(redirect_to_post_id|redirect_to_path|redirect_to_url)
 	 *
 	 * ## OPTIONS
+	 *
+	 * --csv=<path-to-csv>
+	 * : Path to CSV file.
+	 *
+	 * [--skip-validation]
+	 * :  If set, validation of from and to values will be skipped. Defaults to false.
+	 *
+	 * [--verbose]
+	 * : If set, more verbose logging will be output. Defaults to false.
 	 *
 	 * [--format=<format>]
 	 * : Render output in a particular format.
@@ -244,12 +309,18 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 	 *   - csv
 	 * ---
 	 *
-	 * [--verbose]
+	 * ## EXAMPLES
+	 *
+	 *     # Import redirects from a redirects.csv file.
+	 *     $ wp wpcom-legacy-redirector import-from-csv --csv=path/to/redirects.csv
 	 *
 	 * @subcommand import-from-csv
 	 * @synopsis --csv=<path-to-csv> [--format=<format>] [--verbose] [--skip-validation]
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Key-value associative arguments.
 	 */
-	function import_from_csv( $args, $assoc_args ) {
+	public function import_from_csv( $args, $assoc_args ) {
 		define( 'WP_IMPORTING', true );
 		$format   = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format' );
 		$csv      = trim( \WP_CLI\Utils\get_flag_value( $assoc_args, 'csv' ) );
@@ -272,8 +343,9 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		ini_set( 'auto_detect_line_endings', true );
 
 		global $wpdb;
-		$row = 0;
-		if ( ( $handle = fopen( $csv, 'r' ) ) !== false ) {
+		$row    = 0;
+		$handle = fopen( $csv, 'r' );
+		if ( false !== $handle ) {
 			while ( ( $data = fgetcsv( $handle, 2000, ',' ) ) !== false ) {
 				$row++;
 				$redirect_from = $data[0];
@@ -281,7 +353,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 				if ( $verbose ) {
 					WP_CLI::line( "Adding (CSV) redirect for {$redirect_from} to {$redirect_to}" );
 					WP_CLI::line( "-- at $row" );
-				} elseif ( 0 == $row % 100 ) {
+				} elseif ( 0 === $row % 100 ) {
 					WP_CLI::line( "Processing row $row" );
 				}
 
@@ -301,7 +373,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 					);
 				}
 
-				if ( 0 == $row % 100 ) {
+				if ( 0 === $row % 100 ) {
 					if ( function_exists( 'stop_the_insanity' ) ) {
 						stop_the_insanity();
 					}
@@ -313,22 +385,39 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 			if ( count( $notices ) > 0 ) {
 				WP_CLI\Utils\format_items( $format, $notices, array( 'redirect_from', 'redirect_to', 'message' ) );
 			} else {
-				echo WP_CLI::colorize( '%GAll of your redirects have been imported. Nice work!%n ' );
+				WP_CLI::log( WP_CLI::colorize( '%GAll of your redirects have been imported. Nice work!%n ' ) );
 			}
 		}
 	}
 
 	/**
-	 * Export non-trashed redirects to a CSV file matching the following structure:
+	 * Export non-trashed redirects to a CSV file.
 	 *
-	 * redirect_from_path,(redirect_to_post_id|redirect_to_path|redirect_to_url)
+	 * Matches the following structure:
+	 *    redirect_from_path,(redirect_to_post_id|redirect_to_path|redirect_to_url)
+	 *
+	 * ## OPTIONS
+	 *
+	 * <csv>
+	 * : Path to CSV.
+	 *
+	 * [--overwrite]
+	 * : Whether to overwrite an existing file. Defaults to false.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Export redirects to a redirects.csv file.
+	 *     $ wp wpcom-legacy-redirector export-to-csv --csv=path/to/redirects.csv
 	 *
 	 * @subcommand export-to-csv
 	 * @synopsis --csv=<path-to-csv> [--overwrite]
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Key-value associative arguments.
 	 */
 	public function export_to_csv( $args, $assoc_args ) {
 		$filename  = $assoc_args['csv'] ? $assoc_args['csv'] : false;
-		$overwrite = isset( $assoc_args['overwrite'] ) ? $assoc_args['overwrite'] : false;
+		$overwrite = isset( $assoc_args['overwrite'] ) ? (bool) $assoc_args['overwrite'] : false;
 
 		if ( ! $filename ) {
 			WP_CLI::error( 'Invalid CSV file!' );
@@ -353,27 +442,28 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		$output         = array();
 
 		do {
-			$posts = get_posts( array(
-				'posts_per_page'   => $posts_per_page,
-				'paged'            => $paged,
-				'post_type'        => Post_Type::POST_TYPE,
-				'post_status'      => 'any',
-				'suppress_filters' => 'false',
-			) );
+			$posts = get_posts(
+				array(
+					'posts_per_page'   => $posts_per_page,
+					'paged'            => $paged,
+					'post_type'        => Post_Type::POST_TYPE,
+					'post_status'      => 'any',
+					'suppress_filters' => 'false',
+				)
+			);
 
 			foreach ( $posts as $post ) {
 				$redirect_from = $post->post_title;
-				$redirect_to   = ( $post->post_parent && $post->post_parent !== 0 ) ? $post->post_parent : $post->post_excerpt;
+				$redirect_to   = ( $post->post_parent && 0 !== $post->post_parent ) ? $post->post_parent : $post->post_excerpt;
 				$output[]      = array( $redirect_from, $redirect_to );
 			}
 			$progress->tick( $posts_per_page );
 
-			if ( function_exists( 'stop_the_insanity' ) ) {
-				stop_the_insanity();
+			if ( function_exists( 'vip_inmemory_cleanup' ) ) {
+				vip_inmemory_cleanup();
 			}
 
 			$paged++;
-
 		} while ( count( $posts ) );
 
 		$progress->finish();

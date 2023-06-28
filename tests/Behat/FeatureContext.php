@@ -1,8 +1,8 @@
 <?php
 /**
- * Class FeatureContext.
+ * Feature tests context class with WPCOM Legacy Redirector specific steps.
  *
- * Feature tests context class with Traduttore-specific steps.
+ * @package Automattic\LegacyRedirector
  */
 
 namespace Automattic\LegacyRedirector\Tests\Behat;
@@ -18,6 +18,8 @@ use WP_CLI\Tests\Context\FeatureContext as WP_CLI_FeatureContext;
 final class FeatureContext extends WP_CLI_FeatureContext {
 
 	/**
+	 * Set-up the plugin to be active.
+	 *
 	 * @Given a WP install(ation) with the WPCOM legacy Redirector plugin
 	 *
 	 * Adapted from https://github.com/wearerequired/traduttore/blob/master/tests/phpunit/tests/Behat/FeatureContext.php
@@ -29,7 +31,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 		// Symlink the current project folder into the WP folder as a plugin.
 		$project_dir = realpath( self::get_vendor_dir() . '/../' );
 		$plugin_dir  = $this->variables['RUN_DIR'] . '/wp-content/plugins';
-		//$this->ensure_dir_exists( $plugin_dir );
+		$this->ensure_dir_exists( $plugin_dir );
 		$this->proc( "ln -s {$project_dir} {$plugin_dir}/wpcom-legacy-redirector" )->run_check();
 
 		// Activate the plugin.
@@ -42,6 +44,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 	 * Copied as is from the Tradutorre repo as well.
 	 *
 	 * @param string $directory Directory to ensure the existence of.
+	 * @throws \RuntimeException Directory could not be created.
 	 */
 	private function ensure_dir_exists( $directory ): void {
 		$parent = dirname( $directory );

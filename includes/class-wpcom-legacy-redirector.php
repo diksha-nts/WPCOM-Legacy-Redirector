@@ -1,4 +1,9 @@
 <?php
+/**
+ * WPCOM_Legacy_Redirector class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 use \Automattic\LegacyRedirector\Capability;
 use \Automattic\LegacyRedirector\List_Redirects;
@@ -16,7 +21,7 @@ class WPCOM_Legacy_Redirector {
 	/**
 	 * Actions and filters.
 	 */
-	static function start() {
+	public static function start() {
 		add_action( 'init', array( __CLASS__, 'init' ) );
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		add_filter( 'template_redirect', array( __CLASS__, 'maybe_do_redirect' ), 0 ); // hook in early, before the canonical redirect.
@@ -28,7 +33,7 @@ class WPCOM_Legacy_Redirector {
 	/**
 	 * Initialize and register other classes during admin_init hook.
 	 */
-	static function admin_init() {
+	public static function admin_init() {
 		$capability = new Capability();
 		$capability->register();
 	}
@@ -36,7 +41,7 @@ class WPCOM_Legacy_Redirector {
 	/**
 	 * Initialize and register other classes.
 	 */
-	static function init() {
+	public static function init() {
 		$post_type = new Post_Type();
 		$post_type->register();
 
@@ -50,7 +55,7 @@ class WPCOM_Legacy_Redirector {
 	 * @param array $actions Current bulk actions available to drop-down.
 	 * @return array Available bulk actions minus edit functionality.
 	 */
-	static function remove_bulk_edit( $actions ) {
+	public static function remove_bulk_edit( $actions ) {
 		unset( $actions['edit'] );
 		return $actions;
 	}
@@ -58,7 +63,7 @@ class WPCOM_Legacy_Redirector {
 	/**
 	 * Performs redirect if current URL is a 404 and redirect rule exists.
 	 */
-	static function maybe_do_redirect() {
+	public static function maybe_do_redirect() {
 		// Avoid the overhead of running this on every single pageload.
 		// We move the overhead to the 404 page but the trade-off for site performance is worth it.
 		if ( ! is_404() ) {
@@ -103,7 +108,7 @@ class WPCOM_Legacy_Redirector {
 			return;
 		}
 
-		wp_enqueue_script( 'wpcom-legacy-redirector', plugins_url( '/../js/admin-add-redirects.js', __FILE__ ), [], WPCOM_LEGACY_REDIRECTOR_VERSION, true );
+		wp_enqueue_script( 'wpcom-legacy-redirector', plugins_url( '/../js/admin-add-redirects.js', __FILE__ ), array(), WPCOM_LEGACY_REDIRECTOR_VERSION, true );
 		wp_localize_script( 'wpcom-legacy-redirector', 'wpcomLegacyRedirector', array( 'siteurl' => get_option( 'siteurl' ) ) );
 	}
 
@@ -116,7 +121,7 @@ class WPCOM_Legacy_Redirector {
 	 * @param bool       $return_id   Return the insertd post ID if successful, rather than boolean true.
 	 * @return bool|WP_Error True or post ID if inserted; false if not permitted; otherwise error upon validation issue.
 	 */
-	static function insert_legacy_redirect( $from_url, $redirect_to, $validate = true, $return_id = false ) {
+	public static function insert_legacy_redirect( $from_url, $redirect_to, $validate = true, $return_id = false ) {
 		if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) && ! is_admin() && ! apply_filters( 'wpcom_legacy_redirector_allow_insert', false ) ) {
 			// Never run on the front end.
 			return false;
@@ -170,7 +175,7 @@ class WPCOM_Legacy_Redirector {
 	 * @param string $redirect_to URL to redirect to (destination).
 	 * @return array|WP_Error Error if invalid redirect URL specified; returns array of params otherwise.
 	 */
-	static function validate_urls( $from_url, $redirect_to ) {
+	public static function validate_urls( $from_url, $redirect_to ) {
 		if ( false !== Lookup::get_redirect_uri( $from_url ) ) {
 			return new WP_Error( 'duplicate-redirect-uri', 'A redirect for this URI already exists' );
 		}
@@ -306,9 +311,9 @@ class WPCOM_Legacy_Redirector {
 			$response = wp_remote_get( $url );
 			// If it was an error, try again with no SSL verification, in case it was a self-signed certificate: https://github.com/Automattic/WPCOM-Legacy-Redirector/issues/64.
 			if ( is_wp_error( $response ) ) {
-				$args     = [
+				$args     = array(
 					'sslverify' => false,
-				];
+				);
 				$response = wp_remote_get( $url, $args );
 			}
 		}
@@ -395,6 +400,9 @@ class WPCOM_Legacy_Redirector {
 				return true;
 			}
 		} else {
+			if ( is_int( $post ) ) {
+				$post = get_post( $post );
+			}
 			$parent = get_post( $post->post_parent );
 			if ( null === get_post( $post->post_parent ) ) {
 				return false;

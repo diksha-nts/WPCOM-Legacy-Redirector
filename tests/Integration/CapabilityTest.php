@@ -1,4 +1,9 @@
 <?php
+/**
+ * Capability tests
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
@@ -13,13 +18,12 @@ use WP_User;
 final class CapabilityTest extends TestCase {
 
 	/**
-	 * tearDown method to be called after each test.
+	 * Tear down method to be called after each test.
 	 *
 	 * @return void
 	 */
 	public function tear_down() {
-
-		(new Capability())->unregister();
+		( new Capability() )->unregister();
 	}
 
 	/**
@@ -28,7 +32,6 @@ final class CapabilityTest extends TestCase {
 	 * @return void
 	 */
 	public function test_new_admin_capability() {
-
 		$capability = new Capability();
 
 		// We need to force clear capabilities here as the wp_options `roles` option might not get cleared after a failed test.
@@ -81,7 +84,6 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the user has the redirects capability, false otherwise.
 	 */
 	private function assertUserHasRedirectCapability( $user ) {
-
 		if ( is_numeric( $user ) ) {
 			$user = wp_set_current_user( $user );
 		}
@@ -96,7 +98,6 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the user does not have the redirects capability, false otherwise.
 	 */
 	private function assertUserNotHasRedirectCapability( $user ) {
-
 		if ( is_numeric( $user ) ) {
 			$user = wp_set_current_user( $user );
 		}

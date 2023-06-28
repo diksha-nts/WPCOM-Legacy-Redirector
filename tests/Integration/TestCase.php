@@ -1,9 +1,17 @@
 <?php
+/**
+ * Integration tests testcase
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPTestUtilsTestCase;
 
+/**
+ * Integrations test testcase class
+ */
 abstract class TestCase extends WPTestUtilsTestCase {
 
 	/**
