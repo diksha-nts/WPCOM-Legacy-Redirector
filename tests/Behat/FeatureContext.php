@@ -57,4 +57,22 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 			throw new \RuntimeException( "Could not create directory '{$directory}'." );
 		}
 	}
+
+	/**
+	 * Add host to allowed_redirect_hosts.
+	 *
+	 * @Given I add :host to allowed_redirect_hosts
+	 *
+	 * @param string $host Host name to add.
+	 */
+	public function i_add_host_to_allowed_redirect_hosts( $host ) {
+		$filter_allowed_redirect_hosts = <<<PHPCODE
+<?php \add_filter( 'allowed_redirect_hosts', fn( \$hosts ) => array_merge( \$hosts, array( '$host' ) ) );
+PHPCODE;
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+		file_put_contents(
+			$this->variables['RUN_DIR'] . "/wp-content/mu-plugins/allowed_redirect_hosts-{$host}.php",
+			$filter_allowed_redirect_hosts
+		);
+	}
 }

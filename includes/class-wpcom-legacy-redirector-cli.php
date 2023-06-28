@@ -73,9 +73,13 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 
 		$progress->finish();
 
-		$domains = array_unique( $domains );
+		$domains       = array_unique( $domains );
+		$domains_count = count( $domains );
 
-		WP_CLI::line( sprintf( 'Found %s unique outbound domains.', number_format( count( $domains ) ) ) );
+		/* translators: %s = count of the domains */
+		$translatable_text = _n( 'Found %s unique outbound domain.', 'Found %s unique outbound domains.', $domains_count );
+
+		WP_CLI::line( sprintf( $translatable_text, number_format( $domains_count ) ) );
 
 		foreach ( $domains as $domain ) {
 			WP_CLI::line( $domain );
