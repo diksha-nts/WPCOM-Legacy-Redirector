@@ -75,4 +75,15 @@ PHPCODE;
 			$filter_allowed_redirect_hosts
 		);
 	}
+
+	/**
+	 * Add a published post.
+	 *
+	 * @Given there is a published post with a slug/title of :post_name
+	 *
+	 * @param string $post_name Post name to use.
+	 */
+	public function there_is_a_published_post( $post_name ) {
+		$this->proc( "wp post create --post_title='{$post_name}' --post_name='{$post_name}' --post_status='publish'" )->run_check();
+	}
 }
