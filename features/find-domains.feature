@@ -24,7 +24,7 @@ Feature: Test that the Find Domains subcommand works correctly.
     And I run `wp wpcom-legacy-redirector find-domains`
     Then STDOUT should contain:
       """
-      Found 1 unique outbound domains.
+      Found 1 unique outbound domain.
       google.com
       """
 
@@ -37,7 +37,7 @@ Feature: Test that the Find Domains subcommand works correctly.
     When I run `wp wpcom-legacy-redirector find-domains`
     Then STDOUT should contain:
       """
-      Found 1 unique outbound domains.
+      Found 1 unique outbound domain.
       google.com
       """
 
