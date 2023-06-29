@@ -1,10 +1,13 @@
-Feature: Test that the Insert Redirect subcommand works correctly.
+Feature: Inserting a redirect
+  As a user
+  I want to insert a redirect
+  So that specific requests are redirected
 
   Background:
     Given a WP installation with the WPCOM Legacy Redirector plugin
 
-  Scenario: WPCOM Legacy Redirector inserts a redirect with a path
-    Given there is a published post with a slug of bar
+  Scenario: Insert a redirect to a path
+    Given there is a published post with a slug of "bar"
 
     When I run `wp wpcom-legacy-redirector insert-redirect /foo /bar`
     Then STDOUT should contain:
@@ -12,7 +15,7 @@ Feature: Test that the Insert Redirect subcommand works correctly.
       Success: Inserted /foo -> /bar
       """
 
-  Scenario: WPCOM Legacy Redirector inserts a redirect to a URL
+  Scenario: Insert a redirect to a safe URL
     # example.com seems to have an automatic bypass on allowed_redirect_hosts filter unlike other hosts.
     When I run `wp wpcom-legacy-redirector insert-redirect /foo https://example.com`
     Then STDOUT should contain:
@@ -20,17 +23,17 @@ Feature: Test that the Insert Redirect subcommand works correctly.
       Success: Inserted /foo -> https://example.com
       """
 
-  Scenario: WPCOM Legacy Redirector can't insert a redirect to itself
-    When I try `wp wpcom-legacy-redirector insert-redirect /foo /foo`
+  Scenario: Redirect to disallowed host is not allowed
+    When I try `wp wpcom-legacy-redirector insert-redirect /foo https://google.com`
     Then STDERR should contain:
       """
-      Error: Couldn't insert /foo -> /foo ("Redirect From" and "Redirect To" values are required and should not match.)
+      Error: Couldn't insert /foo -> https://google.com (If you are doing an external redirect, make sure you safelist the domain using the "allowed_redirect_hosts" filter.)
       """
 
   @broken
   # Maybe Behat can't handle the wp_remote_get() check?
-  Scenario: WPCOM Legacy Redirector can't insert a redirect from a published page
-    Given there is a published post with a slug of bar
+  Scenario: Can't insert a redirect from a page that doesn't have a 404 status
+    Given there is a published post with a slug of "bar"
 
     When I try `wp wpcom-legacy-redirector insert-redirect /bar /hello-world`
     Then STDERR should contain:
@@ -38,16 +41,19 @@ Feature: Test that the Insert Redirect subcommand works correctly.
       Error: Couldn't insert /bar -> /hello-world (Redirects need to be from URLs that have a 404 status.)
       """
 
+  Scenario: Can't insert a redirect to itself
+    When I try `wp wpcom-legacy-redirector insert-redirect /foo /foo`
+    Then STDERR should contain:
+      """
+      Error: Couldn't insert /foo -> /foo ("Redirect From" and "Redirect To" values are required and should not match.)
+      """
+
+
   @broken
   # See https://github.com/Automattic/WPCOM-Legacy-Redirector/issues/117.
-  Scenario: WP-CLI inserts a redirect with a post ID
+  Scenario: Insert a redirect to a post ID
     Given I run `wp post create --post_title='Test post' --post_status="publish" --porcelain`
-    Then save STDOUT as {POST_ID}
-    Given I run `wp post list`
-    Then STDOUT should contain:
-      """
-      Test
-      """
+    And save STDOUT as {POST_ID}
 
     When I run `wp wpcom-legacy-redirector insert-redirect /foo1 {POST_ID}`
     Then STDOUT should contain:

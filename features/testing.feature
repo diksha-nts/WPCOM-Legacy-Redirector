@@ -1,10 +1,10 @@
-Feature: Test that WP-CLI and the WPCOM Legacy Redirector command loads.
+  Feature: The Behat tests are configured correctly
 
   Scenario: WP-CLI loads for your tests
     Given a WP install
 
     When I run `wp eval 'echo "Hello world.";'`
-    Then STDOUT should contain:
+    Then STDOUT should be:
       """
       Hello world.
       """
