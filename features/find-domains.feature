@@ -1,24 +1,28 @@
-Feature: Test that the Find Domains subcommand works correctly.
+Feature: Finding domains of redirects
+  As a user
+  I want to find the unique outbound domains
+  So I can populate the allowed_redirect_hosts filter
 
   Background:
     Given a WP installation with the WPCOM Legacy Redirector plugin
 
-  Scenario: WPCOM Legacy Redirector finds zero domains by default
+  Scenario: Find zero domains when there are no redirects saved
     When I run `wp wpcom-legacy-redirector find-domains`
     Then STDOUT should contain:
       """
       Found 0 unique outbound domains.
       """
 
-  Scenario: WPCOM Legacy Redirector does not allow redirect to disallowed host.
-    When I try `wp wpcom-legacy-redirector insert-redirect /foo https://google.com`
-    Then STDERR should contain:
+  Scenario: Find zero domains when only path redirects are saved
+    Given I run `wp wpcom-legacy-redirector insert-redirect /foo /hello-world`
+    When I run `wp wpcom-legacy-redirector find-domains`
+    Then STDOUT should contain:
       """
-      Error: Couldn't insert /foo -> https://google.com (If you are doing an external redirect, make sure you safelist the domain using the "allowed_redirect_hosts" filter.)
+      Found 0 unique outbound domains.
       """
 
-  Scenario: WPCOM Legacy Redirector finds one domain from one redirect
-    Given I add google.com to allowed_redirect_hosts
+  Scenario: Find one domain from one URL redirect
+    Given "google.com" is allowed to be redirected
 
     When I run `wp wpcom-legacy-redirector insert-redirect /foo https://google.com`
     And I run `wp wpcom-legacy-redirector find-domains`
@@ -28,8 +32,8 @@ Feature: Test that the Find Domains subcommand works correctly.
       google.com
       """
 
-  Scenario: WPCOM Legacy Redirector finds one domain from multiple redirects
-    Given I add google.com to allowed_redirect_hosts
+  Scenario: Find one domain from multiple redirects to the same host
+    Given "google.com" is allowed to be redirected
 
     When I run `wp wpcom-legacy-redirector insert-redirect /foo https://google.com`
     And I run `wp wpcom-legacy-redirector insert-redirect /foo1 https://google.com/1`
@@ -41,9 +45,9 @@ Feature: Test that the Find Domains subcommand works correctly.
       google.com
       """
 
-  Scenario: WPCOM Legacy Redirector finds multiple domain from multiple redirects
-    Given I add google.com to allowed_redirect_hosts
-    And I add google.co.uk to allowed_redirect_hosts
+  Scenario: Find multiple domains from multiple redirects to different domains
+    Given "google.com" is allowed to be redirected
+    And "google.co.uk" is allowed to be redirected
 
     When I run `wp wpcom-legacy-redirector insert-redirect /foo https://google.com`
     And I run `wp wpcom-legacy-redirector insert-redirect /foo1 https://google.co.uk`

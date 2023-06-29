@@ -61,7 +61,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 	/**
 	 * Add host to allowed_redirect_hosts.
 	 *
-	 * @Given I add :host to allowed_redirect_hosts
+	 * @Given :host is allowed to be redirected
 	 *
 	 * @param string $host Host name to add.
 	 */
@@ -79,7 +79,7 @@ PHPCODE;
 	/**
 	 * Add a published post.
 	 *
-	 * @Given there is a published post with a slug/title of :post_name
+	 * @Given there is a published post with a slug of :post_name
 	 *
 	 * @param string $post_name Post name to use.
 	 */
