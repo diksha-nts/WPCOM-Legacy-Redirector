@@ -49,7 +49,7 @@
     ],
 	"behat": "run-behat-tests",
 	"behat-rerun": "rerun-behat-tests",
-	"prepare-tests": "install-package-tests"
+	"prepare-behat-tests": "install-package-tests"
   },
   "config": {
     "allow-plugins": {
