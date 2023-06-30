@@ -25,7 +25,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 	 * Adapted from https://github.com/wearerequired/traduttore/blob/master/tests/phpunit/tests/Behat/FeatureContext.php
 	 * with credit and thanks to them.
 	 */
-	public function given_a_wp_installation_with_the_wpcomlr_plugin(): void {
+	public function given_a_wp_installation_with_the_wpcomlr_plugin() {
 		$this->install_wp();
 
 		// Symlink the current project folder into the WP folder as a plugin.
@@ -46,7 +46,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 	 * @param string $directory Directory to ensure the existence of.
 	 * @throws \RuntimeException Directory could not be created.
 	 */
-	private function ensure_dir_exists( $directory ): void {
+	private function ensure_dir_exists( $directory ) {
 		$parent = dirname( $directory );
 
 		if ( ! empty( $parent ) && ! is_dir( $parent ) ) {
@@ -67,7 +67,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 	 */
 	public function i_add_host_to_allowed_redirect_hosts( $host ) {
 		$filter_allowed_redirect_hosts = <<<PHPCODE
-<?php \add_filter( 'allowed_redirect_hosts', fn( \$hosts ) => array_merge( \$hosts, array( '$host' ) ) );
+<?php add_filter( 'allowed_redirect_hosts', function( \$hosts ) { return array_merge( \$hosts, array( '$host' ) ); } );
 PHPCODE;
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
 		file_put_contents(
