@@ -63,6 +63,10 @@
 		"test-unit": [
 			"@php ./vendor/phpunit/phpunit/phpunit --testdox --no-coverage"
 		],
+		"test-unit-ms": [
+			"@putenv WP_MULTISITE=1",
+			"@test-unit"
+		],
 		"test-coverage": [
 			"@php ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=coverage && echo coverage/index.html"
 		]
