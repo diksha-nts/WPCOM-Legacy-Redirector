@@ -130,5 +130,4 @@ final class Lookup {
 
 		return $redirect_post_id;
 	}
-
 }

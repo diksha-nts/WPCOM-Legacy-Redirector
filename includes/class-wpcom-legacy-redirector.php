@@ -5,10 +5,10 @@
  * @package Automattic\LegacyRedirector
  */
 
-use \Automattic\LegacyRedirector\Capability;
-use \Automattic\LegacyRedirector\List_Redirects;
-use \Automattic\LegacyRedirector\Lookup;
-use \Automattic\LegacyRedirector\Post_Type;
+use Automattic\LegacyRedirector\Capability;
+use Automattic\LegacyRedirector\List_Redirects;
+use Automattic\LegacyRedirector\Lookup;
+use Automattic\LegacyRedirector\Post_Type;
 
 /**
  * Plugin core functionality for creating, validating, and performing redirect rules.
@@ -267,13 +267,13 @@ class WPCOM_Legacy_Redirector {
 	}
 
 	/**
-	 * Utility function to lowercase string.
+	 * Utility function to lowercase a string.
 	 *
-	 * @param string $string To apply lowercase.
+	 * @param string $a_string To apply lowercase.
 	 * @return string Lowercase representation of string.
 	 */
-	public static function lowercase( $string ) {
-		return ! empty( $string ) ? strtolower( $string ) : $string;
+	public static function lowercase( $a_string ) {
+		return ! empty( $a_string ) ? strtolower( $a_string ) : $a_string;
 	}
 
 	/**

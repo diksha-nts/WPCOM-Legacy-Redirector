@@ -7,7 +7,7 @@
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
-use \Automattic\LegacyRedirector\Lookup;
+use Automattic\LegacyRedirector\Lookup;
 use WPCOM_Legacy_Redirector;
 
 /**
@@ -128,7 +128,7 @@ final class RedirectsTest extends TestCase {
 	public function test_protected_query_redirect( $from, $to, $protected_from, $protected_to ) {
 		add_filter(
 			'wpcom_legacy_redirector_preserve_query_params',
-			function( $preserved_params ) {
+			function ( $preserved_params ) {
 				array_push(
 					$preserved_params,
 					'utm_source',
@@ -145,6 +145,4 @@ final class RedirectsTest extends TestCase {
 		$redirect = Lookup::get_redirect_uri( $protected_from );
 		$this->assertEquals( $redirect, $protected_to, 'get_redirect_uri failed' );
 	}
-
 }
-

@@ -19,6 +19,7 @@
 		"composer/installers": "^1 || ^2"
 	},
 	"require-dev": {
+		"phpcompatibility/phpcompatibility-wp": "^2",
 		"wp-cli/entity-command": "^2",
 		"wp-cli/extension-command": "^2",
 		"wp-cli/wp-cli-tests": "^4",
