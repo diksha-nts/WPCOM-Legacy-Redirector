@@ -44,12 +44,16 @@
   "scripts": {
     "behat": "run-behat-tests",
     "behat-rerun": "rerun-behat-tests",
-    "cs": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs",
-    "integration-test": [
+    "cs": "@php ./vendor/bin/phpcs",
+    "prepare-behat-tests": "install-package-tests",
+	"test": [
+      "@php composer test-unit",
+      "@php composer test-integration"
+    ],
+    "test-integration": [
       "@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist"
     ],
-    "prepare-behat-tests": "install-package-tests",
-    "test": [
+    "test-unit": [
       "@php ./vendor/phpunit/phpunit/phpunit --testdox"
     ],
     "test-coverage": [
