@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 Requires PHP 7.4.
+Requires WordPress 5.9.
 
 ### Added
 - Admin pages to view, add, delete, and validate redirects. Uses new `manage_redirects` capability. 
@@ -29,7 +30,6 @@ Requires PHP 7.4.
 ## Fixed
 - Trim whitespace around CSV file path, to support dragging a file into the terminal window to add the path.
 - Ensure `POST` var is set during CLI command.
-
 
 ## [1.3.0] - 2016-03-29
 
