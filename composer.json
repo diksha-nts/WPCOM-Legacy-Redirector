@@ -16,13 +16,13 @@
   },
   "require": {
     "php": ">=7.4",
-    "composer/installers": "^1"
+    "composer/installers": "^1 || ^2"
   },
   "require-dev": {
-    "wp-cli/entity-command": "^2.5",
-    "wp-cli/extension-command": "^2.0",
-    "wp-cli/wp-cli-tests": "^3",
-    "wp-coding-standards/wpcs": "^2.3",
+    "wp-cli/entity-command": "^2",
+    "wp-cli/extension-command": "^2",
+    "wp-cli/wp-cli-tests": "^4",
+    "wp-coding-standards/wpcs": "^3",
     "yoast/wp-test-utils": "^1.2"
   },
   "autoload": {
