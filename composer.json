@@ -45,6 +45,9 @@
 		"behat": "run-behat-tests",
 		"behat-rerun": "rerun-behat-tests",
 		"cs": "@php ./vendor/bin/phpcs",
+		"prepare": [
+			"bash bin/install-wp-tests.sh wordpress_test root root localhost"
+		],
 		"prepare-behat-tests": "install-package-tests",
 		"test": [
 			"@php composer test-unit",
@@ -52,6 +55,10 @@
 		],
 		"test-integration": [
 			"@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist --no-coverage"
+		],
+		"test-integration-ms": [
+			"@putenv WP_MULTISITE=1",
+			"@test-integration"
 		],
 		"test-unit": [
 			"@php ./vendor/phpunit/phpunit/phpunit --testdox --no-coverage"
