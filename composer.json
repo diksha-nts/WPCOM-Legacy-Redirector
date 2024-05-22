@@ -51,10 +51,10 @@
 			"@php composer test-integration"
 		],
 		"test-integration": [
-			"@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist"
+			"@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist --no-coverage"
 		],
 		"test-unit": [
-			"@php ./vendor/phpunit/phpunit/phpunit --testdox"
+			"@php ./vendor/phpunit/phpunit/phpunit --testdox --no-coverage"
 		],
 		"test-coverage": [
 			"@php ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=coverage && echo coverage/index.html"
