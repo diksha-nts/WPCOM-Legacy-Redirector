@@ -6,7 +6,7 @@ Please see our [wiki](https://github.com/Automattic/WPCOM-Legacy-Redirector/wiki
 
 ## Requirements
 
-- PHP 5.6+
+- PHP 7.4+
 - WordPress 4.5+
 
 ## Change Log
