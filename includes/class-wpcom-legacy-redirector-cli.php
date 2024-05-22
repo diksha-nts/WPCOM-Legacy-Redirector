@@ -5,7 +5,7 @@
  * @package Automattic\LegacyRedirector
  */
 
-use \Automattic\LegacyRedirector\Post_Type;
+use Automattic\LegacyRedirector\Post_Type;
 
 /**
  * Manage redirects added via the WPCOM Legacy Redirector plugin.
@@ -68,7 +68,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 
 			// Pause.
 			sleep( 1 );
-			$paged++;
+			++$paged;
 		} while ( count( $redirect_urls ) );
 
 		$progress->finish();
@@ -77,7 +77,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		$domains_count = count( $domains );
 
 		/* translators: %s = count of the domains */
-		$translatable_text = _n( 'Found %s unique outbound domain.', 'Found %s unique outbound domains.', $domains_count );
+		$translatable_text = _n( 'Found %s unique outbound domain.', 'Found %s unique outbound domains.', $domains_count, 'wpcom-legacy-redirector' );
 
 		WP_CLI::line( sprintf( $translatable_text, number_format( $domains_count ) ) );
 
@@ -221,7 +221,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 			$total     = count( $redirects );
 
 			foreach ( $redirects as $redirect ) {
-				$i++;
+				++$i;
 				$progress->tick();
 
 				if ( true === $skip_dupes && 0 !== WPCOM_Legacy_Redirector::get_redirect_post_id( wp_parse_url( $redirect->meta_value, PHP_URL_PATH ) ) ) {
@@ -351,7 +351,7 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 		$handle = fopen( $csv, 'r' );
 		if ( false !== $handle ) {
 			while ( ( $data = fgetcsv( $handle, 2000, ',' ) ) !== false ) {
-				$row++;
+				++$row;
 				$redirect_from = $data[0];
 				$redirect_to   = $data[1];
 				if ( $verbose ) {
@@ -467,12 +467,11 @@ class WPCOM_Legacy_Redirector_CLI extends WP_CLI_Command {
 				vip_inmemory_cleanup();
 			}
 
-			$paged++;
+			++$paged;
 		} while ( count( $posts ) );
 
 		$progress->finish();
 		WP_CLI\Utils\write_csv( $file_descriptor, $output );
 		fclose( $file_descriptor );
 	}
-
 }

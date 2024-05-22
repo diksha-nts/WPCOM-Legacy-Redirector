@@ -67,6 +67,7 @@ final class PreservableParamsTest extends TestCase {
 				array(
 					'foo' => '123',
 					'bar' => 'qwerty',
+					// phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found -- intentional duplicate.
 					'foo' => '456',
 				),
 			),

@@ -23,10 +23,8 @@ final class List_Redirects {
 
 	/**
 	 * Set Columns for Redirect Table.
-	 *
-	 * @param array $columns Columns to show for the post type.
 	 */
-	public function set_columns( $columns ) {
+	public function set_columns() {
 		return array(
 			'cb'   => '<input type="checkbox" />',
 			'from' => __( 'Redirect From', 'wpcom-legacy-redirector' ),
@@ -59,12 +57,10 @@ final class List_Redirects {
 						echo esc_html( $excerpt );
 					} elseif ( 0 === strpos( $excerpt, 'http' ) ) {
 						echo esc_url_raw( $excerpt );
+					} elseif ( 'private' === \WPCOM_Legacy_Redirector::vip_legacy_redirect_check_if_public( $excerpt ) ) {
+						echo esc_html( $excerpt ) . '<br /><em>' . esc_html__( 'Warning: Redirect is not a public URL.', 'wpcom-legacy-redirector' ) . '</em>';
 					} else {
-						if ( 'private' === \WPCOM_Legacy_Redirector::vip_legacy_redirect_check_if_public( $excerpt ) ) {
-							echo esc_html( $excerpt ) . '<br /><em>' . esc_html__( 'Warning: Redirect is not a public URL.', 'wpcom-legacy-redirector' ) . '</em>';
-						} else {
-							echo esc_html( $excerpt );
-						}
+						echo esc_html( $excerpt );
 					}
 				} else {
 					switch ( \WPCOM_Legacy_Redirector::vip_legacy_redirect_parent_id( $post ) ) {

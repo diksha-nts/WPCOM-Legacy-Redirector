@@ -53,8 +53,9 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 			$this->ensure_dir_exists( $parent );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
 		if ( ! is_dir( $directory ) && ! mkdir( $directory ) && ! is_dir( $directory ) ) {
-			throw new \RuntimeException( "Could not create directory '{$directory}'." );
+			throw new \RuntimeException( esc_html( "Could not create directory '{$directory}'." ) );
 		}
 	}
 
@@ -69,7 +70,7 @@ final class FeatureContext extends WP_CLI_FeatureContext {
 		$filter_allowed_redirect_hosts = <<<PHPCODE
 <?php add_filter( 'allowed_redirect_hosts', function( \$hosts ) { return array_merge( \$hosts, array( '$host' ) ); } );
 PHPCODE;
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		file_put_contents(
 			$this->variables['RUN_DIR'] . "/wp-content/mu-plugins/allowed_redirect_hosts-{$host}.php",
 			$filter_allowed_redirect_hosts

@@ -5,8 +5,8 @@
  * @package Automattic\LegacyRedirector
  */
 
-use \Automattic\LegacyRedirector\Capability;
-use \Automattic\LegacyRedirector\Post_Type;
+use Automattic\LegacyRedirector\Capability;
+use Automattic\LegacyRedirector\Post_Type;
 
 /**
  * User interface additions.
@@ -128,7 +128,7 @@ class WPCOM_Legacy_Redirector_UI {
 					$this->vip_legacy_redirect_sendback( 'null', $post->ID );
 				}
 				// Check if $redirect is valid.
-				if ( wp_validate_redirect( $redirect, false ) && 404 !== $status || 'valid' === $redirect ) {
+				if ( ( wp_validate_redirect( $redirect, false ) && 404 !== $status ) || 'valid' === $redirect ) {
 					$this->vip_legacy_redirect_sendback( 'valid', $post->ID );
 				}
 			}
