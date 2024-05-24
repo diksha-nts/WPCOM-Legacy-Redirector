@@ -1,8 +1,16 @@
 <?php
+/**
+ * WPCOM_Legacy_Redirector_UI class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
-use \Automattic\LegacyRedirector\Capability;
-use \Automattic\LegacyRedirector\Post_Type;
+use Automattic\LegacyRedirector\Capability;
+use Automattic\LegacyRedirector\Post_Type;
 
+/**
+ * User interface additions.
+ */
 class WPCOM_Legacy_Redirector_UI {
 	/**
 	 * Constructor Class.
@@ -62,18 +70,21 @@ class WPCOM_Legacy_Redirector_UI {
 
 	/**
 	 * Remove "draft" from the status filters for vip-legacy-redirect post type.
+	 *
+	 * @param array $views Status filters.
+	 * @return array
 	 */
 	public function vip_redirects_custom_post_status_filters( $views ) {
 		unset( $views['draft'] );
 		return $views;
 	}
-	
-	
+
+
 	/**
 	 * Return error data when validate check fails.
 	 *
 	 * @param string $validate String that passes back the validate result in order to output the right notice.
-	 * @param int $post_id The Post ID.
+	 * @param int    $post_id  The Post ID.
 	 */
 	public function vip_legacy_redirect_sendback( $validate, $post_id ) {
 		$sendback = remove_query_arg( array( 'validate', 'ids' ), wp_get_referer() );
@@ -92,7 +103,6 @@ class WPCOM_Legacy_Redirector_UI {
 	 * Validate the Redirect To URL.
 	 */
 	public function validate_vip_legacy_redirect() {
-
 		if ( isset( $_GET['action'] ) && 'validate' === $_GET['action'] ) {
 			$post = get_post( $_GET['post'] );
 			if ( ! isset( $_REQUEST['_validate_redirect'] ) || ! wp_verify_nonce( $_REQUEST['_validate_redirect'], 'validate_vip_legacy_redirect' ) ) {
@@ -118,7 +128,7 @@ class WPCOM_Legacy_Redirector_UI {
 					$this->vip_legacy_redirect_sendback( 'null', $post->ID );
 				}
 				// Check if $redirect is valid.
-				if ( wp_validate_redirect( $redirect, false ) && 404 !== $status || 'valid' === $redirect ) {
+				if ( ( wp_validate_redirect( $redirect, false ) && 404 !== $status ) || 'valid' === $redirect ) {
 					$this->vip_legacy_redirect_sendback( 'valid', $post->ID );
 				}
 			}
@@ -177,9 +187,7 @@ class WPCOM_Legacy_Redirector_UI {
 		$errors   = $array[0];
 		$messages = $array[1];
 
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification -- Not being saved directly, only used to pre-populate field if there was an error on the last submission.
 		$redirect_from_value = isset( $_POST['redirect_from'], $errors[0] ) ? sanitize_text_field( wp_unslash( $_POST['redirect_from'] ) ) : '/';
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification -- Not being saved directly, only used to pre-populate field if there was an error on the last submission.
 		$redirect_to_value   = isset( $_POST['redirect_to'], $errors[0] ) ? sanitize_text_field( wp_unslash( $_POST['redirect_to'] ) ) : '/';
 		?>
 		<style>

@@ -1,9 +1,17 @@
 <?php
+/**
+ * Lookup class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector;
 
 use Automattic\LegacyRedirector\Utils;
 
+/**
+ * Lookup class.
+ */
 final class Lookup {
 	const CACHE_GROUP = 'vip-legacy-redirect-2';
 
@@ -13,7 +21,7 @@ final class Lookup {
 	 * @param string $url URL to redirect (source).
 	 * @return string|bool Redirect URL if one was found; otherwise false.
 	 */
-	static function get_redirect_uri( $url ) {
+	public static function get_redirect_uri( $url ) {
 		$url = \WPCOM_Legacy_Redirector::normalise_url( $url );
 		if ( is_wp_error( $url ) ) {
 			return false;
@@ -151,7 +159,7 @@ final class Lookup {
 	 * @param string $url URL to redirect (source).
 	 * @return string|int Redirect post ID (as string) if one was found; otherwise 0.
 	 */
-	static function get_redirect_post_id( $url ) {
+	public static function get_redirect_post_id( $url ) {
 		global $wpdb;
 
 		$url_hash = \WPCOM_Legacy_Redirector::get_url_hash( $url );
@@ -164,5 +172,4 @@ final class Lookup {
 
 		return $redirect_post_id;
 	}
-
 }

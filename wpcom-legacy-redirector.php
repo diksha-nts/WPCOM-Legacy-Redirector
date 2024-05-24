@@ -1,12 +1,12 @@
 <?php
 /**
  * Plugin Name: WPCOM Legacy Redirector
- * Plugin URI: https://vip.wordpress.com/plugins/wpcom-legacy-redirector/
+ * Plugin URI: https://github.com/Automattic/WPCOM-Legacy-Redirector
  * Description: Simple plugin for handling legacy redirects in a scalable manner.
  * Version: 1.4.0-alpha
- * Requires PHP: 5.6
- * Author: Automattic / WordPress.com VIP
- * Author URI: https://vip.wordpress.com
+ * Requires PHP: 7.4
+ * Author: Automattic / WordPress VIP
+ * Author URI: https://wpvip.com
  *
  * Redirects are stored as a custom post type and use the following fields:
  *
@@ -18,7 +18,7 @@
  *  - post_parent if we're redirect to a post; or
  *  - post_excerpt if we're redirecting to an alternate URL.
  *
- * Please contact us before using this plugin.
+ * @package Automattic\LegacyRedirector
  */
 
 define( 'WPCOM_LEGACY_REDIRECTOR_VERSION', '1.4.0-alpha' );

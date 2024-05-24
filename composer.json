@@ -1,42 +1,75 @@
 {
-  "name": "automattic/wpcom-legacy-redirector",
-  "type": "wordpress-plugin",
-  "description": "WordPress plugin for handling large volumes of legacy redirects in a scalable manner.",
-  "homepage": "https://github.com/Automattic/WPCOM-Legacy-Redirector",
-  "license": "GPL-2.0-or-later",
-  "authors": [
-    {
-      "name": "Automattic",
-      "homepage": "http://automattic.com/"
-    }
-  ],
-  "require": {
-    "php" : ">=5.6",
-    "composer/installers": "^1"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^5 || ^6 || ^7",
-    "polevaultweb/phpunit-wp-cli-runner": "dev-master",
-    "yoast/wp-test-utils": "^0.2"
-  },
-  "support": {
-    "issues": "https://github.com/Automattic/WPCOM-Legacy-Redirector/issues",
-    "source": "https://github.com/Automattic/WPCOM-Legacy-Redirector"
-  },
-  "autoload": {
-    "classmap": [
-      "includes/"
-    ]
-  },
-  "scripts": {
-    "test": [
-      "@php ./vendor/phpunit/phpunit/phpunit"
-    ],
-	"test-coverage": [
-      "@php ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=coverage && echo coverage/index.html"
-    ],
-    "integration-test": [
-      "@php ./vendor/phpunit/phpunit/phpunit -c phpunit-integration.xml.dist"
-    ]
-  }
+	"name": "automattic/wpcom-legacy-redirector",
+	"description": "WordPress plugin for handling large volumes of legacy redirects in a scalable manner.",
+	"license": "GPL-2.0-or-later",
+	"type": "wordpress-plugin",
+	"authors": [
+		{
+			"name": "Automattic",
+			"homepage": "http://automattic.com/"
+		}
+	],
+	"homepage": "https://github.com/Automattic/WPCOM-Legacy-Redirector",
+	"support": {
+		"issues": "https://github.com/Automattic/WPCOM-Legacy-Redirector/issues",
+		"source": "https://github.com/Automattic/WPCOM-Legacy-Redirector"
+	},
+	"require": {
+		"php": ">=7.4",
+		"composer/installers": "^1 || ^2"
+	},
+	"require-dev": {
+		"phpcompatibility/phpcompatibility-wp": "^2",
+		"wp-cli/entity-command": "^2",
+		"wp-cli/extension-command": "^2",
+		"wp-cli/wp-cli-tests": "^4",
+		"wp-coding-standards/wpcs": "^3",
+		"yoast/wp-test-utils": "^1.2"
+	},
+	"autoload": {
+		"classmap": [
+			"includes/"
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Automattic\\LegacyRedirector\\Tests\\": "tests/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"behat": "run-behat-tests",
+		"behat-rerun": "rerun-behat-tests",
+		"cs": "@php ./vendor/bin/phpcs",
+		"prepare": [
+			"bash bin/install-wp-tests.sh wordpress_test root root localhost"
+		],
+		"prepare-behat-tests": "install-package-tests",
+		"test": [
+			"@php composer test-unit",
+			"@php composer test-integration"
+		],
+		"test-integration": [
+			"@php ./vendor/phpunit/phpunit/phpunit --testdox -c phpunit-integration.xml.dist --no-coverage"
+		],
+		"test-integration-ms": [
+			"@putenv WP_MULTISITE=1",
+			"@test-integration"
+		],
+		"test-unit": [
+			"@php ./vendor/phpunit/phpunit/phpunit --testdox --no-coverage"
+		],
+		"test-unit-ms": [
+			"@putenv WP_MULTISITE=1",
+			"@test-unit"
+		],
+		"test-coverage": [
+			"@php ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=coverage && echo coverage/index.html"
+		]
+	}
 }

@@ -1,7 +1,15 @@
 <?php
+/**
+ * Capability class
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector;
 
+/**
+ * Capability class.
+ */
 final class Capability {
 	const MANAGE_REDIRECTS_CAPABILITY = 'manage_redirects';
 
@@ -12,7 +20,6 @@ final class Capability {
 	 * Add custom capability onto some existing roles using VIP Helpers with fallbacks.
 	 */
 	public function register() {
-
 		$capabilities_version_key = $this->get_capabilities_version_key();
 
 		// We disable capabilities register unless there is a version increment.
@@ -37,12 +44,9 @@ final class Capability {
 	}
 
 	/**
-	 * Unregister the capabilities
-	 *
-	 * @return void
+	 * Unregister the capabilities.
 	 */
 	public function unregister() {
-
 		$capabilities_version_key = $this->get_capabilities_version_key();
 
 		if ( function_exists( 'wpcom_vip_remove_role_caps' ) ) {

@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-Requires PHP 5.6.
+Requires PHP 7.4.
+Requires WordPress 5.9.
 
 ### Added
 - Admin pages to view, add, delete, and validate redirects. Uses new `manage_redirects` capability. 
@@ -19,7 +20,7 @@ Requires PHP 5.6.
 
 ## Changed
 - Improved adherence to WPCS and VIPCS coding standards.
-- Drop PHP 5.3 support.
+- Drop PHP 5.3-7.3 support.
 - Use WP_CLI:error to halt operation on failed insert using `insert-redirect`.
 - Return an error if no redirects were found for a meta key.
 - Added performance improvement for `import-from-meta` command.
@@ -29,7 +30,6 @@ Requires PHP 5.6.
 ## Fixed
 - Trim whitespace around CSV file path, to support dragging a file into the terminal window to add the path.
 - Ensure `POST` var is set during CLI command.
-
 
 ## [1.3.0] - 2016-03-29
 

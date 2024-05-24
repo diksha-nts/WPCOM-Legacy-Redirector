@@ -1,12 +1,29 @@
 <?php
+/**
+ * Redirects tests
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
-use \Automattic\LegacyRedirector\Lookup;
+use Automattic\LegacyRedirector\Lookup;
 use WPCOM_Legacy_Redirector;
 
+/**
+ * Redirects tests class.
+ */
 final class RedirectsTest extends TestCase {
 
+	/**
+	 * Data provider.
+	 *
+	 * Each item in the outermost array should be an array containing:
+	 * - $from path
+	 * - $to destination
+	 *
+	 * @return array<string, array>
+	 */
 	public function get_redirect_data() {
 		return array(
 			'redirect_unicode_in_path'  => array(
@@ -36,21 +53,30 @@ final class RedirectsTest extends TestCase {
 				'/hash-redirect#with-hash',
 				'http://example.com',
 			),
-
 		);
 	}
 
 	/**
+	 * Test redirect is inserted successfully and returns true.
+	 *
 	 * @dataProvider get_redirect_data
+	 * @covers       WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 * @param string $from From path.
+	 * @param string $to   Destination.
 	 */
 	public function test_redirect_is_inserted_successfully_and_returns_true( $from, $to ) {
 		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect() and return true, failed' );
 
 		$redirect = Lookup::get_redirect_uri( $from );
-		$this->assertEquals( $redirect, $to, 'get_redirect_uri(), failed' );
+		$this->assertEquals( $redirect, $to, 'get_redirect_uri(), failed - got "' . $redirect . '", expected "' . $to . '"' );
 	}
 
+	/**
+	 * Test redirect is inserted successfully and returns a post ID.
+	 *
+	 * @covers WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 */
 	public function test_redirect_is_inserted_successfully_and_returns_post_id() {
 		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( '/simple-redirect', 'http://example.com', false, true );
 		self::assertIsInt( $redirect, 'insert_legacy_redirect() and return post ID, failed' );
@@ -95,14 +121,20 @@ final class RedirectsTest extends TestCase {
 	}
 
 	/**
-	 * Verify that safelisted parameters are maintained on final redirect urls.
+	 * Verify that safelisted parameters are maintained on final redirect URLs.
 	 *
 	 * @dataProvider get_protected_redirect_data
+	 * @covers       WPCOM_Legacy_Redirector::insert_legacy_redirect
+	 * @covers       \Automattic\LegacyRedirector\Lookup::get_redirect_uri
+	 * @param string $from           From path.
+	 * @param string $to             Destination.
+	 * @param string $protected_from From path with preserved params.
+	 * @param string $protected_to   Destination. with preserved params.
 	 */
 	public function test_protected_query_redirect( $from, $to, $protected_from, $protected_to ) {
 		add_filter(
 			'wpcom_legacy_redirector_preserve_query_params',
-			function( $preserved_params ) {
+			function ( $preserved_params ) {
 				array_push(
 					$preserved_params,
 					'utm_source',
@@ -119,6 +151,4 @@ final class RedirectsTest extends TestCase {
 		$redirect = Lookup::get_redirect_uri( $protected_from );
 		$this->assertEquals( $redirect, $protected_to, 'get_redirect_uri failed' );
 	}
-
 }
-

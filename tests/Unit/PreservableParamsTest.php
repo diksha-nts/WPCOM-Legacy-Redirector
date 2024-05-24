@@ -1,4 +1,9 @@
 <?php
+/**
+ * Preservable querystring parameters tests
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Unit;
 
@@ -7,11 +12,22 @@ use Brain\Monkey;
 use UnexpectedValueException;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
+/**
+ * Preservable querystring parameters tests.
+ */
 final class PreservableParamsTest extends TestCase {
-
+	/**
+	 * Data provider.
+	 *
+	 * Each item in the outermost array should be an array containing:
+	 *  - $url
+	 *  - $preservable_param_keys
+	 *  - $expected
+	 *
+	 * @return array<string, array>
+	 */
 	public function data_get_preservable_querystring_params_from_url() {
 		return array(
-			// $url, $preservable_param_keys, $expected array.
 			'No querystring'                         => array(
 				'https://example.com',
 				array( 'foo', 'bar', 'baz' ),
@@ -51,6 +67,7 @@ final class PreservableParamsTest extends TestCase {
 				array(
 					'foo' => '123',
 					'bar' => 'qwerty',
+					// phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found -- intentional duplicate.
 					'foo' => '456',
 				),
 			),
@@ -87,12 +104,16 @@ final class PreservableParamsTest extends TestCase {
 	}
 
 	/**
-	 * @covers \Automattic\LegacyRedirector\Lookup::get_preservable_querystring_params_from_url
-	 * @uses \Automattic\LegacyRedirector\Utils::mb_parse_url
+	 * Test that preservable parameters from the querystring are preserved.
+	 *
+	 * @covers       \Automattic\LegacyRedirector\Lookup::get_preservable_querystring_params_from_url
+   * @uses.        \Automattic\LegacyRedirector\Utils::mb_parse_url
 	 * @dataProvider data_get_preservable_querystring_params_from_url
+	 * @param string $url                    The URL to parse.
+	 * @param array  $preservable_param_keys The keys that should be preserved.
+	 * @param array  $expected               The expected outcome.
 	 */
 	public function test_get_preservable_querystring_params_from_url( $url, $preservable_param_keys, $expected ) {
-
 		Monkey\Filters\expectApplied( 'wpcom_legacy_redirector_preserve_query_params' )
 			->once()
 			->andReturn( $preservable_param_keys );
@@ -100,6 +121,7 @@ final class PreservableParamsTest extends TestCase {
 		Monkey\Functions\stubs(
 			array(
 				'wp_parse_url' => static function ( $url, $component ) {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 					return parse_url( $url, $component );
 				},
 			)

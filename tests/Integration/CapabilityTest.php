@@ -1,4 +1,9 @@
 <?php
+/**
+ * Capability tests
+ *
+ * @package Automattic\LegacyRedirector
+ */
 
 namespace Automattic\LegacyRedirector\Tests\Integration;
 
@@ -7,17 +12,18 @@ use WP_User;
 
 /**
  * CapabilityTest class.
+ *
+ * @covers \Automattic\LegacyRedirector\Capability
  */
 final class CapabilityTest extends TestCase {
 
 	/**
-	 * tearDown method to be called after each test.
+	 * Tear down method to be called after each test.
 	 *
 	 * @return void
 	 */
-	public function tearDown() {
-
-		(new Capability())->unregister();
+	public function tear_down() {
+		( new Capability() )->unregister();
 	}
 
 	/**
@@ -26,7 +32,6 @@ final class CapabilityTest extends TestCase {
 	 * @return void
 	 */
 	public function test_new_admin_capability() {
-
 		$capability = new Capability();
 
 		// We need to force clear capabilities here as the wp_options `roles` option might not get cleared after a failed test.
@@ -79,7 +84,6 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the user has the redirects capability, false otherwise.
 	 */
 	private function assertUserHasRedirectCapability( $user ) {
-
 		if ( is_numeric( $user ) ) {
 			$user = wp_set_current_user( $user );
 		}
@@ -94,7 +98,6 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the user does not have the redirects capability, false otherwise.
 	 */
 	private function assertUserNotHasRedirectCapability( $user ) {
-
 		if ( is_numeric( $user ) ) {
 			$user = wp_set_current_user( $user );
 		}
@@ -109,7 +112,7 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the role has the redirects capability, false otherwise.
 	 */
 	private function assertRoleHasRedirectsCapability( $role ) {
-		$user_id = $this->factory->user->create( array( 'role' => $role ) );
+		$user_id = self::factory()->user->create( array( 'role' => $role ) );
 		$user    = wp_set_current_user( $user_id );
 
 		return $this->assertUserHasRedirectCapability( $user );
@@ -122,7 +125,7 @@ final class CapabilityTest extends TestCase {
 	 * @return bool True if the role does not have the redirects capability, false otherwise.
 	 */
 	private function assertRoleNotHasRedirectsCapability( $role ) {
-		$user_id = $this->factory->user->create( array( 'role' => $role ) );
+		$user_id = self::factory()->user->create( array( 'role' => $role ) );
 		$user    = wp_set_current_user( $user_id );
 
 		return $this->assertUserNotHasRedirectCapability( $user );
