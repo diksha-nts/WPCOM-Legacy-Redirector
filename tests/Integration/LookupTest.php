@@ -41,17 +41,17 @@ final class LookupTest extends TestCase {
 		return array(
 			'redirect unicode characters with querystring' => array(
 				'/فوتوغرافيا/?test=فوتوغرافيا',
-				'/some_other_page',
+				'http://example.com/some_other_page',
 				'301',
 			),
 			'redirect_simple'                              => array(
 				'/test',
-				'/',
+				'http://example.com/',
 				'301',
 			),
 			'redirect_unicode_no_query'                    => array(
 				'/فوتوغرافيا/',
-				'/',
+				'http://example.com/',
 				'301',
 			),
 		);

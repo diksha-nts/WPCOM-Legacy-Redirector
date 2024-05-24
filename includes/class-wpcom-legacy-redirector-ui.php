@@ -7,6 +7,7 @@
 
 use Automattic\LegacyRedirector\Capability;
 use Automattic\LegacyRedirector\Post_Type;
+use Automattic\LegacyRedirector\Utils;
 
 /**
  * User interface additions.
@@ -154,11 +155,20 @@ class WPCOM_Legacy_Redirector_UI {
 				);
 			} else {
 				$redirect_from = sanitize_text_field( $_POST['redirect_from'] );
+
+				// We apply the home_url() prefix to $redirect_from.
+				$redirect_url_info = Utils::mb_parse_url( home_url() . $redirect_from);
+				$redirect_from = $redirect_url_info['path'];
+				if( !empty( $redirect_url_info['query'] ) ) {
+					$redirect_from .= '?' . $redirect_url_info['query'];
+				}
+
 				$redirect_to   = sanitize_text_field( $_POST['redirect_to'] );
 				if ( WPCOM_Legacy_Redirector::validate( $redirect_from, $redirect_to ) ) {
 					$output = WPCOM_Legacy_Redirector::insert_legacy_redirect( $redirect_from, $redirect_to, true );
 					if ( true === $output ) {
-						$link       = '<a href="' . esc_url( $redirect_from ) . '" target="_blank">' . esc_url( $redirect_from ) . '</a>';
+						$follow_home_domain = Utils::get_home_domain_without_path();
+						$link       = '<a href="' . esc_url( $follow_home_domain . $redirect_from ) . '" target="_blank">' . esc_html( $redirect_from ) . '</a>';
 						$messages[] = __( 'The redirect was added successfully. Check Redirect: ', 'wpcom-legacy-redirector' ) . $link;
 					} elseif ( is_wp_error( $output ) ) {
 						foreach ( $output->get_error_messages() as $error ) {
