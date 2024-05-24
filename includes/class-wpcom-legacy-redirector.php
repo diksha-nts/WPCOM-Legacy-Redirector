@@ -5,10 +5,11 @@
  * @package Automattic\LegacyRedirector
  */
 
-use Automattic\LegacyRedirector\Capability;
-use Automattic\LegacyRedirector\List_Redirects;
-use Automattic\LegacyRedirector\Lookup;
-use Automattic\LegacyRedirector\Post_Type;
+use \Automattic\LegacyRedirector\Capability;
+use \Automattic\LegacyRedirector\List_Redirects;
+use \Automattic\LegacyRedirector\Lookup;
+use \Automattic\LegacyRedirector\Post_Type;
+use \Automattic\LegacyRedirector\Utils;
 
 /**
  * Plugin core functionality for creating, validating, and performing redirect rules.
@@ -70,30 +71,28 @@ class WPCOM_Legacy_Redirector {
 			return;
 		}
 
-		$url = wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
-
-		if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
-			$url .= '?' . $_SERVER['QUERY_STRING'];
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return;
 		}
 
-		$request_path = apply_filters( 'wpcom_legacy_redirector_request_path', $url );
+		// $_SERVER is being sanitized in self::normalise_url().
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$redirect_data = Lookup::get_redirect_data( self::normalise_url( $_SERVER['REQUEST_URI'] ) );
 
-		if ( $request_path ) {
-			$redirect_uri = Lookup::get_redirect_uri( $request_path );
-			if ( $redirect_uri ) {
-				$redirect_status = apply_filters( 'wpcom_legacy_redirector_redirect_status', 301, $url );
-
-				// Third argument introduced to support the x_redirect_by header to denote WP redirect source.
-				if ( version_compare( get_bloginfo( 'version' ), '5.1.0', '>=' ) ) {
-					wp_safe_redirect( $redirect_uri, $redirect_status, WPCOM_LEGACY_REDIRECTOR_PLUGIN_NAME );
-				} else {
-					header( 'X-legacy-redirect: HIT' );
-					wp_safe_redirect( $redirect_uri, $redirect_status );
-				}
-
-				exit;
-			}
+		if ( ! $redirect_data || ! isset( $redirect_data['redirect_uri'] ) ) {
+			return;
 		}
+
+		// Third argument introduced to support the x_redirect_by header to denote WP redirect source.
+		if ( version_compare( get_bloginfo( 'version' ), '5.1.0', '>=' ) ) {
+			wp_safe_redirect( $redirect_data['redirect_uri'], $redirect_data['redirect_status'], WPCOM_LEGACY_REDIRECTOR_PLUGIN_NAME );
+		} else {
+			header( 'X-legacy-redirect: HIT' );
+			wp_safe_redirect( $redirect_data['redirect_uri'], $redirect_data['redirect_status'] );
+		}
+
+		// We need this here to make sure wp_safe_redirect() redirects correctly.
+		exit;
 	}
 
 	/**
@@ -151,10 +150,10 @@ class WPCOM_Legacy_Redirector {
 
 		if ( is_numeric( $redirect_to ) ) {
 			$args['post_parent'] = $redirect_to;
-		} elseif ( false !== wp_parse_url( $redirect_to ) ) {
+		} elseif ( false !== Utils::mb_parse_url( $redirect_to ) ) {
 			$args['post_excerpt'] = esc_url_raw( $redirect_to );
 		} else {
-			return new WP_Error( 'invalid-redirect-url', 'Invalid redirect_to param; should be a post_id or a URL' );
+			return self::throw_error( 'invalid-redirect-url', 'Invalid redirect_to param; should be a post_id or a URL' );
 		}
 
 		$inserted_post_id = wp_insert_post( $args );
@@ -224,6 +223,24 @@ class WPCOM_Legacy_Redirector {
 	}
 
 	/**
+	 * Throws new error method
+	 *
+	 * @throws \Exception $message.
+	 *
+	 * @param string $code    Error code.
+	 * @param string $message Error message.
+	 * @return \WP_Error | void
+	 */
+	public static function throw_error( $code, $message ) {
+
+		if ( class_exists( '\WP_Error' ) ) {
+			return new \WP_Error( $code, $message );
+		}
+
+		throw new \Exception( $message );
+	}
+
+	/**
 	 * Takes a request URL and "normalises" it, stripping common elements.
 	 * Removes scheme and host from the URL, as redirects should be independent of these.
 	 *
@@ -231,23 +248,24 @@ class WPCOM_Legacy_Redirector {
 	 * @return string|WP_Error Transformed URL; error if validation failed.
 	 */
 	public static function normalise_url( $url ) {
+
 		// Sanitise the URL first rather than trying to normalise a non-URL.
 		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-redirect-url', 'The URL does not validate' );
+			return self::throw_error( 'invalid-redirect-url', 'The URL does not validate' );
 		}
 
 		// Break up the URL into it's constituent parts.
-		$components = wp_parse_url( $url );
+		$components = Utils::mb_parse_url( $url );
 
 		// Avoid playing with unexpected data.
 		if ( ! is_array( $components ) ) {
-			return new WP_Error( 'url-parse-failed', 'The URL could not be parsed' );
+			return self::throw_error( 'url-parse-failed', 'The URL could not be parsed' );
 		}
 
 		// We should have at least a path or query.
 		if ( ! isset( $components['path'] ) && ! isset( $components['query'] ) ) {
-			return new WP_Error( 'url-parse-failed', 'The URL contains neither a path nor query string' );
+			return self::throw_error( 'url-parse-failed', 'The URL contains neither a path nor query string' );
 		}
 
 		// Make sure $components['query'] is set, to avoid errors.
