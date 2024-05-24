@@ -108,7 +108,7 @@ class WPCOM_Legacy_Redirector {
 		}
 
 		wp_enqueue_script( 'wpcom-legacy-redirector', plugins_url( '/../js/admin-add-redirects.js', __FILE__ ), array(), WPCOM_LEGACY_REDIRECTOR_VERSION, true );
-		wp_localize_script( 'wpcom-legacy-redirector', 'wpcomLegacyRedirector', array( 'siteurl' => get_option( 'siteurl' ) ) );
+		wp_localize_script( 'wpcom-legacy-redirector', 'wpcomLegacyRedirector', array( 'siteurl' => home_url() ) );
 	}
 
 	/**

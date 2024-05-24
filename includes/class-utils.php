@@ -51,4 +51,20 @@ final class Utils {
 
 		return $parts;
 	}
+
+	/**
+	 * Get WP Home URL without path suffix.
+	 *
+	 * @return string
+	 */
+	public static function get_home_domain_without_path() {
+		$home_url_info = self::mb_parse_url( home_url() );
+		$return_url    = $home_url_info['scheme'] . '://' . $home_url_info['host'];
+
+		if ( !empty( $home_url_info['port'] ) ) {
+			$return_url .= ':' . $home_url_info['port'];
+		}
+
+		return $return_url;
+	}
 }

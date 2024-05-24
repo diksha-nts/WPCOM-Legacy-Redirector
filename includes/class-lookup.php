@@ -52,7 +52,14 @@ final class Lookup {
 				return add_query_arg( $preservable_params, get_permalink( $redirect_post->post_parent ) );
 			} elseif ( ! empty( $redirect_post->post_excerpt ) ) {
 				// Add preserved params to the destination URL.
-				return add_query_arg( $preservable_params, esc_url_raw( $redirect_post->post_excerpt ) );
+				// We need to add here the home_url() if the target starts with /.
+				$redirect_url = esc_url_raw( $redirect_post->post_excerpt );
+
+				if ( strpos( $redirect_post->post_excerpt, '/' ) === 0 ) {
+					$redirect_url = home_url() . $redirect_url;
+				}
+
+				return add_query_arg( $preservable_params, $redirect_url );
 			}
 		}
 		return false;

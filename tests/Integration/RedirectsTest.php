@@ -26,6 +26,12 @@ final class RedirectsTest extends TestCase {
 	 */
 	public function get_redirect_data() {
 		return array(
+			'redirect_relative_path'  => array(
+				'/non-existing-page',
+				'/test2',
+				home_url() . '/test2',
+			),
+
 			'redirect_unicode_in_path'  => array(
 				// https://www.w3.org/International/articles/idn-and-iri/ .
 				'/JP納豆',
@@ -64,12 +70,16 @@ final class RedirectsTest extends TestCase {
 	 * @param string $from From path.
 	 * @param string $to   Destination.
 	 */
-	public function test_redirect_is_inserted_successfully_and_returns_true( $from, $to ) {
+	public function test_redirect_is_inserted_successfully_and_returns_true( $from, $to, $expected = null ) {
 		$redirect = WPCOM_Legacy_Redirector::insert_legacy_redirect( $from, $to, false );
 		$this->assertTrue( $redirect, 'insert_legacy_redirect() and return true, failed' );
 
 		$redirect = Lookup::get_redirect_uri( $from );
-		$this->assertEquals( $redirect, $to, 'get_redirect_uri(), failed - got "' . $redirect . '", expected "' . $to . '"' );
+
+		if ( \is_null( $expected ) ) {
+			$expected = $to;
+		}
+		$this->assertEquals( $expected, $redirect, 'get_redirect_uri(), failed - got "' . $redirect . '", expected "' . $to . '"' );
 	}
 
 	/**
