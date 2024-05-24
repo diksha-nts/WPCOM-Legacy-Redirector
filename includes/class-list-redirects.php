@@ -118,7 +118,7 @@ final class List_Redirects {
 						'validate' => sprintf(
 							'<a href="%1$s">%2$s</a>',
 							esc_url( $validate_link ),
-							'Validate'
+							esc_html__( 'Validate', 'wpcom-legacy-redirector' )
 						),
 						'follow' => sprintf(
 							'<a href="%1$s" target="_blank">%2$s</a>',
