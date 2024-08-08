@@ -166,6 +166,11 @@ class WPCOM_Legacy_Redirector_UI {
 				$redirect_to   = sanitize_text_field( $_POST['redirect_to'] );
 				if ( WPCOM_Legacy_Redirector::validate( $redirect_from, $redirect_to ) ) {
 					$output = WPCOM_Legacy_Redirector::insert_legacy_redirect( $redirect_from, $redirect_to, true );
+					if( true === $output ) {
+						// We apply here a filter for custom redirect validation.
+						$output = apply_filters( 'validate_vip_legacy_redirect_loop', $output, $redirect_from, $redirect_to );
+					}
+
 					if ( true === $output ) {
 						$follow_home_domain = Utils::get_home_domain_without_path();
 						$link       = '<a href="' . esc_url( $follow_home_domain . $redirect_from ) . '" target="_blank">' . esc_html( $redirect_from ) . '</a>';
