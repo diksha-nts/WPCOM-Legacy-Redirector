@@ -187,7 +187,14 @@ class WPCOM_Legacy_Redirector {
 				$message = __( 'If you are doing an external redirect, make sure you safelist the domain using the "allowed_redirect_hosts" filter.', 'wpcom-legacy-redirector' );
 				return new WP_Error( 'external-url-not-allowed', $message );
 			}
-			return array( $from_url, $redirect_to );
+			/**
+			 * Filter the result of the redirect validation.
+			 *
+			 * @param bool   $is_valid    Whether the URLs are valid for redirection.
+			 * @param string $from_url    URL to redirect (source).
+			 * @param string $redirect_to URL to redirect to (destination).
+			 */
+			return apply_filters( 'wpcom_legacy_redirector_validate_urls', array( $from_url, $redirect_to ) );
 		}
 		if ( false === self::validate( $from_url, $redirect_to ) ) {
 			$message = __( '"Redirect From" and "Redirect To" values are required and should not match.', 'wpcom-legacy-redirector' );
@@ -209,7 +216,14 @@ class WPCOM_Legacy_Redirector {
 			$message = __( 'You are trying to redirect to a URL that does not exist.', 'wpcom-legacy-redirector' );
 			return new WP_Error( 'invalid', $message );
 		}
-		return array( $from_url, $redirect_to );
+		/**
+		 * Filter the result of the redirect validation.
+		 *
+		 * @param bool   $is_valid    Whether the URLs are valid for redirection.
+		 * @param string $from_url    URL to redirect (source).
+		 * @param string $redirect_to URL to redirect to (destination).
+		 */
+		return apply_filters( 'wpcom_legacy_redirector_validate_urls', array( $from_url, $redirect_to ) );
 	}
 
 	/**
