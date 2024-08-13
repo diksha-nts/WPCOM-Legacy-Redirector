@@ -190,7 +190,6 @@ class WPCOM_Legacy_Redirector {
 			/**
 			 * Filter the result of the redirect validation.
 			 *
-			 * @param bool   $is_valid    Whether the URLs are valid for redirection.
 			 * @param string $from_url    URL to redirect (source).
 			 * @param string $redirect_to URL to redirect to (destination).
 			 */
@@ -219,7 +218,6 @@ class WPCOM_Legacy_Redirector {
 		/**
 		 * Filter the result of the redirect validation.
 		 *
-		 * @param bool   $is_valid    Whether the URLs are valid for redirection.
 		 * @param string $from_url    URL to redirect (source).
 		 * @param string $redirect_to URL to redirect to (destination).
 		 */
