@@ -212,8 +212,7 @@ class WPCOM_Legacy_Redirector {
 		/**
 		 * Filter the result of the redirect validation.
 		 *
-		 * @param string $from_url    URL to redirect (source).
-		 * @param string $redirect_to URL to redirect to (destination).
+		 * @param array Array of params from_url and redirect_to.
 		 */
 		return apply_filters( 'wpcom_legacy_redirector_validate_urls', array( $from_url, $redirect_to ) );
 	}
